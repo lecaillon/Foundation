@@ -432,6 +432,12 @@ namespace Foundation.Metadata
         {
             Check.NotNull(targetEntity, nameof(targetEntity));
             Check.NotNull(navigation, nameof(navigation));
+            Check.NotEmpty(associationTableName, nameof(associationTableName));
+
+            if (Model.FindEntity(associationTableName) != null)
+                throw new InvalidOperationException(ResX.DuplicateEntity);
+
+            // create new shadow entity
 
             throw new NotImplementedException();
         }
