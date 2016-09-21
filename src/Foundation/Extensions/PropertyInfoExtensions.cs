@@ -37,7 +37,5 @@ namespace Foundation
 
             return targetType;
         }
-
-        public static bool IsInherited(this PropertyInfo property) => false; //  property.DeclaringType != property.ReflectedType;
     }
 }

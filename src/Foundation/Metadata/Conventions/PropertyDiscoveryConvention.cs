@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using Foundation.Utilities;
 
@@ -12,7 +13,7 @@ namespace Foundation.Metadata.Conventions
 
             if (!entity.IsShadowEntity)
             {
-                var primitiveProperties = entity.ClrType.GetRuntimeProperties().Where(IsCandidatePrimitiveProperty);
+                var primitiveProperties = entity.ClrType.GetRuntimeProperties().Where(prop => IsCandidatePrimitiveProperty(prop, entity.ClrType));
                 foreach (var property in primitiveProperties)
                 {
                     entity.GetOrAddProperty(property);
@@ -22,13 +23,13 @@ namespace Foundation.Metadata.Conventions
             return entity;
         }
 
-        protected virtual bool IsCandidatePrimitiveProperty(PropertyInfo property)
+        protected virtual bool IsCandidatePrimitiveProperty(PropertyInfo property, Type entityType)
         {
             Check.NotNull(property, nameof(property));
 
             return property.IsCandidateProperty()
                 && property.PropertyType.IsPrimitive()
-                && !property.IsInherited(); // ne doit pas héritée d'une classe abstraite par ex
+                && property.DeclaringType == entityType; // ne doit pas héritée d'une classe abstraite par ex
         }
     }
 }
