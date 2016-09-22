@@ -77,15 +77,5 @@ namespace Foundation.Metadata
         public DeleteBehavior DeleteBehavior { get; }
 
         public bool IsSelfReferencing => DeclaringEntity == PrincipalEntity;
-
-        public Entity ResolveOtherEntityType(Entity entity)
-        {
-            if (DeclaringEntity != entity && PrincipalEntity != entity)
-            {
-                throw new InvalidOperationException(ResX.EntityTypeNotInRelationshipStrict);
-            }
-
-            return DeclaringEntity == entity ? PrincipalEntity : DeclaringEntity;
-        }
     }
 }

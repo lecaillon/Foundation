@@ -1,4 +1,6 @@
 {
+    "title": "Foundation",
+    "description": "A lightweigth .Net core object-relational mapper",
     "version": "1.0.0-*",
 
     "dependencies": {

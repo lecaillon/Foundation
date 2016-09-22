@@ -55,7 +55,7 @@ namespace Foundation.Metadata.Internal
 
             if (previousLength == _annotations.Value.Count)
             {
-                throw new InvalidOperationException(ResX.DuplicateAnnotation);
+                throw new InvalidOperationException(ResX.DuplicateAnnotation(name));
             }
 
             return annotation;

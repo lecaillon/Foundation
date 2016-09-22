@@ -25,7 +25,7 @@ namespace Foundation.Utilities
                 NotEmpty(parameterName, nameof(parameterName));
                 NotEmpty(propertyName, nameof(propertyName));
 
-                throw new ArgumentException(ResX.ArgumentPropertyNull);
+                throw new ArgumentException(ResX.ArgumentPropertyNull(propertyName, parameterName));
             }
 
             return value;
@@ -39,7 +39,7 @@ namespace Foundation.Utilities
             {
                 NotEmpty(parameterName, nameof(parameterName));
 
-                throw new ArgumentException(ResX.CollectionArgumentIsEmpty);
+                throw new ArgumentException(ResX.CollectionArgumentIsEmpty(parameterName));
             }
 
             return value;
@@ -54,7 +54,7 @@ namespace Foundation.Utilities
             }
             else if (value.Trim().Length == 0)
             {
-                e = new ArgumentException(ResX.ArgumentIsEmpty);
+                e = new ArgumentException(ResX.ArgumentIsEmpty(parameterName));
             }
 
             if (e != null)
@@ -74,7 +74,7 @@ namespace Foundation.Utilities
             {
                 NotEmpty(parameterName, nameof(parameterName));
 
-                throw new ArgumentException(ResX.ArgumentIsEmpty);
+                throw new ArgumentException(ResX.ArgumentIsEmpty(parameterName));
             }
 
             return value;

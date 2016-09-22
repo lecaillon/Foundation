@@ -151,23 +151,23 @@ namespace Foundation.Metadata
             Check.HasNoNulls(properties, nameof(properties));
 
             if (_baseType != null)
-                throw new InvalidOperationException(ResX.DerivedEntityKey);
+                throw new InvalidOperationException(ResX.DerivedEntityKey(Name, _baseType.Name));
 
             foreach (var property in properties)
             {
                 if (FindProperty(property.Name) != property)
-                    throw new InvalidOperationException(ResX.KeyPropertiesWrongEntity);
+                    throw new InvalidOperationException(ResX.KeyPropertiesWrongEntity(Property.Format(properties), Name));
 
                 if (property.ForeignKeys != null && property.ForeignKeys.Any(k => k.DeclaringEntity != this))
-                    throw new InvalidOperationException(ResX.KeyPropertyInForeignKey);
+                    throw new InvalidOperationException(ResX.KeyPropertyInForeignKey(property.Name, Name));
 
                 if (property.IsNullable)
-                    throw new InvalidOperationException(ResX.NullableKey);
+                    throw new InvalidOperationException(ResX.NullableKey(Name, property.Name));
             }
 
             var key = FindKey(properties);
             if (key != null)
-                throw new InvalidOperationException(ResX.DuplicateKey);
+                throw new InvalidOperationException(ResX.DuplicateKey(Property.Format(properties), Name, key.DeclaringEntity.Name));
 
             key = new Key(properties);
             _keys.Add(properties, key);
@@ -214,7 +214,7 @@ namespace Foundation.Metadata
             Check.HasNoNulls(properties, nameof(properties));
 
             if (_baseType != null)
-                throw new InvalidOperationException(ResX.DerivedEntityKey);
+                throw new InvalidOperationException(ResX.DerivedEntityKey(Name, _baseType.Name));
 
             Key key = GetOrAddKey(properties);
             foreach (var property in key.Properties)
@@ -402,7 +402,7 @@ namespace Foundation.Metadata
             }
 
             if (Model.FindEntity(associationTableName) != null)
-                throw new InvalidOperationException(ResX.DuplicateEntity);
+                throw new InvalidOperationException(ResX.DuplicateEntity(associationTableName));
 
             var navigation = AddNavigation(targetEntity, navigationProperty, associationTableName);
 
@@ -423,7 +423,7 @@ namespace Foundation.Metadata
                                           $"{Name}_{targetEntity.Name}";
 
             if (Model.FindEntity(associationTableName) != null)
-                throw new InvalidOperationException(ResX.DuplicateEntity);
+                throw new InvalidOperationException(ResX.DuplicateEntity(associationTableName));
 
             return AddNavigation(targetEntity, navigationProperty, associationTableName);
         }
@@ -435,7 +435,7 @@ namespace Foundation.Metadata
             Check.NotEmpty(associationTableName, nameof(associationTableName));
 
             if (Model.FindEntity(associationTableName) != null)
-                throw new InvalidOperationException(ResX.DuplicateEntity);
+                throw new InvalidOperationException(ResX.DuplicateEntity(associationTableName));
 
             // create new shadow entity
 

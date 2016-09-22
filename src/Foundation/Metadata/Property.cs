@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Foundation.Utilities;
 
@@ -62,5 +63,8 @@ namespace Foundation.Metadata
         public IReadOnlyList<Index> Indexes { get; set; }
 
         public override string ToString() => this.ToDebugString();
+
+        public static string Format(IEnumerable<Property> properties, bool includeTypes = false)
+            => "{" + string.Join(", ", properties.Select(p => "'" + p.Name + "'" + (includeTypes ? " : " + p.ClrType.DisplayName(fullName: false) : ""))) + "}";
     }
 }
