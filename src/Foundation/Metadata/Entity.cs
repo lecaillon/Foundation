@@ -71,10 +71,6 @@ namespace Foundation.Metadata
         ///         Gets the CLR class that is used to represent instances of this entity. Returns null if the entity does not have a
         ///         corresponding CLR class (known as a shadow entity).
         ///     </para>
-        ///     <para>
-        ///         Shadow entities are not currently supported in a model that is used at runtime with a <see cref="DbContext" />.
-        ///         Therefore, shadow entities will only exist in migration model snapshots, etc.
-        ///     </para>
         /// </summary>
         public Type ClrType => _typeOrName as Type;
 
@@ -257,7 +253,8 @@ namespace Foundation.Metadata
             return _primaryKey;
         }
 
-        internal virtual Key SetPrimaryKey(Property property) => SetPrimaryKey(property == null ? null : new[] { property });
+        internal virtual Key SetPrimaryKey(Property property, bool runConventions = true) 
+            => SetPrimaryKey(property == null ? null : new[] { property });
 
         #endregion
 
@@ -324,9 +321,16 @@ namespace Foundation.Metadata
             if (existingProperty != null)
                 return existingProperty;
 
-            var property = new Property(clrProperty, this);
-            _properties.Add(propertyName, property);
-            return Model.ConventionDispatcher.OnPropertyAdded(property);
+            return AddProperty(new Property(clrProperty, this));
+        }
+
+        internal Property AddProperty(Property property)
+        {
+            _properties.Add(property.Name, property);
+
+            Model.ConventionDispatcher.OnPropertyAdded(property);
+
+            return property;
         }
 
         private class PropertyComparer : IComparer<string>
@@ -459,8 +463,25 @@ namespace Foundation.Metadata
             if (Model.FindEntity(associationTableName) != null)
                 throw new InvalidOperationException(ResX.DuplicateEntity(associationTableName));
 
-            // create new shadow entity
+            var shadowEntity = Model.AddEntity(associationTableName, runConventions: false);
 
+            var properties = new List<Property>();
+
+            // TODO : Find great name for PKs : if PK == "Id" --> PK = Concat("Id" + entity.Name)
+
+            FindPrimaryKey().Properties.Concat(targetEntity.FindPrimaryKey().Properties)
+                                       .ToList()
+                                       .ForEach(x => shadowEntity.AddProperty(x.Clone(shadowEntity)));
+
+            shadowEntity.SetPrimaryKey(shadowEntity.GetDeclaredProperties().ToList());
+
+
+
+            throw new NotImplementedException();
+        }
+
+        private Navigation AddInverseNavigation()
+        {
             throw new NotImplementedException();
         }
 

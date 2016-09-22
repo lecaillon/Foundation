@@ -19,6 +19,14 @@ namespace Foundation.Metadata
             ClrType = propertyInfo.PropertyType;
         }
 
+        protected Property(string name, PropertyInfo propertyInfo, Entity declaringEntity) : base(name, propertyInfo)
+        {
+            Check.NotNull(declaringEntity, nameof(declaringEntity));
+
+            DeclaringEntity = declaringEntity;
+            ClrType = propertyInfo.PropertyType;
+        }
+
         /// <summary>
         ///     Gets the type that this property belongs to.
         /// </summary>
@@ -66,5 +74,19 @@ namespace Foundation.Metadata
 
         public static string Format(IEnumerable<Property> properties, bool includeTypes = false)
             => "{" + string.Join(", ", properties.Select(p => "'" + p.Name + "'" + (includeTypes ? " : " + p.ClrType.DisplayName(fullName: false) : ""))) + "}";
+
+        internal Property Clone(Entity targetEntity, string propertyName = null)
+        {
+            Check.NotNull(targetEntity, nameof(targetEntity));
+            Check.NullButNotEmpty(propertyName, nameof(propertyName));
+
+            return new Property(propertyName ?? Name, PropertyInfo, targetEntity)
+            {
+                PrimaryKey = null,
+                ForeignKeys  = null,
+                Keys = null,
+                Indexes = null
+            };
+        }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -15,6 +11,7 @@ namespace Foundation.Metadata
         protected PropertyBase(string name, PropertyInfo propertyInfo)
         {
             Check.NotEmpty(name, nameof(name));
+            Check.NotNull(propertyInfo, nameof(propertyInfo));
 
             Name = name;
             PropertyInfo = propertyInfo;
