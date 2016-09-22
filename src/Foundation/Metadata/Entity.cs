@@ -15,6 +15,7 @@ namespace Foundation.Metadata
     {
         #region Fields
 
+        private readonly object _typeOrName;
         private readonly List<Entity> _directlyDerivedEntities = new List<Entity>();
         private readonly SortedDictionary<string, Property> _properties;
         private readonly SortedDictionary<IReadOnlyList<Property>, Key> _keys = new SortedDictionary<IReadOnlyList<Property>, Key>(PropertyListComparer.Instance);
@@ -24,20 +25,41 @@ namespace Foundation.Metadata
 
         #endregion
 
+        #region Constructors
+
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="name"> Name of the entity. </param>
+        /// <param name="model"> Model this entity belongs to. </param>
+        public Entity(string name, Model model) : this(model)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotNull(model, nameof(model));
+
+            _typeOrName = name;
+        }
+
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="clrType"> Entity type. </param>
         /// <param name="model"> Model this entity belongs to. </param>
-        public Entity(Type clrType, Model model)
+        public Entity(Type clrType, Model model) : this(model)
         {
             Check.NotNull(clrType, nameof(clrType));
             Check.NotNull(model, nameof(model));
 
-            ClrType = clrType;
+            _typeOrName = clrType;
+        }
+
+        private Entity(Model model)
+        {
             Model = model;
             _properties = new SortedDictionary<string, Property>(new PropertyComparer(this));
         }
+
+        #endregion
 
         /// <summary>
         ///     Gets the model this entity belongs to.
@@ -54,7 +76,7 @@ namespace Foundation.Metadata
         ///         Therefore, shadow entities will only exist in migration model snapshots, etc.
         ///     </para>
         /// </summary>
-        public Type ClrType { get; }
+        public Type ClrType => _typeOrName as Type;
 
         /// <summary>
         ///     Returns true if the entity is not linked to a real type.
@@ -70,7 +92,7 @@ namespace Foundation.Metadata
         /// <summary>
         ///     Gets the name of the entity.
         /// </summary>
-        public string Name => ClrType.ShortDisplayName();
+        public string Name => ClrType?.ShortDisplayName() ?? (string)_typeOrName;
 
         /// <summary>
         ///     Gets the base type of the entity. Returns null if this is not a derived type in an inheritance hierarchy.

@@ -11,6 +11,8 @@ namespace Foundation.Metadata.Conventions
         {
             Check.NotNull(entity, nameof(entity));
 
+            if (entity.IsShadowEntity) return null;
+
             var clrType = entity.ClrType;
             Check.NotNull(clrType, nameof(entity.ClrType));
 

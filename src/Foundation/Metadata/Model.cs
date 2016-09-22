@@ -70,10 +70,33 @@ namespace Foundation.Metadata
             return entity;
         }
 
+        /// <summary>
+        ///     Attempts to add the specified entity to this model.
+        /// </summary>
+        /// <returns> The entity. </returns>
+        internal virtual Entity GetOrAddEntity(string name) => FindEntity(name) ?? AddEntity(name);
+
         internal Entity AddEntity(Type type, bool runConventions = true)
         {
+            Check.NotNull(type, nameof(type));
+
             var entity = new Entity(type, this);
             _clrTypeMap[type] = entity;
+
+            return AddEntity(entity, runConventions);
+        }
+
+        internal Entity AddEntity(string name, bool runConventions = true)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var entity = new Entity(name, this);
+
+            return AddEntity(entity, runConventions);
+        }
+
+        private Entity AddEntity(Entity entity, bool runConventions = true)
+        {
             _entities[entity.Name] = entity;
 
             if (runConventions)

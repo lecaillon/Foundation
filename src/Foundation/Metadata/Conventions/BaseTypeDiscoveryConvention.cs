@@ -6,6 +6,8 @@ namespace Foundation.Metadata.Conventions
     {
         public override Entity Apply(Entity entity)
         {
+            if (entity.IsShadowEntity) return entity;
+
             var clrType = entity.ClrType;
             Check.NotNull(clrType, nameof(entity.ClrType));
 
