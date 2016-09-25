@@ -460,21 +460,7 @@ namespace Foundation.Metadata
             Check.NotNull(navigation, nameof(navigation));
             Check.NotEmpty(associationTableName, nameof(associationTableName));
 
-            if (Model.FindEntity(associationTableName) != null)
-                throw new InvalidOperationException(ResX.DuplicateEntity(associationTableName));
-
-            var shadowEntity = Model.AddEntity(associationTableName, runConventions: false);
-
-            var properties = new List<Property>();
-
-            // TODO : Find great name for PKs : if PK == "Id" --> PK = Concat("Id" + entity.Name)
-
-            FindPrimaryKey().Properties.Concat(targetEntity.FindPrimaryKey().Properties)
-                                       .ToList()
-                                       .ForEach(x => shadowEntity.AddProperty(x.Clone(shadowEntity)));
-
-            shadowEntity.SetPrimaryKey(shadowEntity.GetDeclaredProperties().ToList());
-
+            var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
 
 
             throw new NotImplementedException();

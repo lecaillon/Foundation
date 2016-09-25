@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Foundation.Metadata.Conventions;
 using Foundation.Utilities;
 
@@ -93,6 +94,34 @@ namespace Foundation.Metadata
             var entity = new Entity(name, this);
 
             return AddEntity(entity, runConventions);
+        }
+
+        internal Entity AddLinkedEntity(string name, Entity entity1, Entity entity2)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotNull(entity1, nameof(entity1));
+            Check.NotNull(entity2, nameof(entity2));
+
+            if (FindEntity(name) != null)
+                throw new InvalidOperationException(ResX.DuplicateEntity(name));
+
+            var linkedEntity = AddEntity(name, runConventions: false);
+
+            var properties = new List<Property>();
+            entity1.FindPrimaryKey().Properties.Concat(entity2.FindPrimaryKey().Properties)
+                                    .ToList()
+                                    .ForEach(x =>
+                                    {
+                                        string propertyName = x.Name.Equals("Id", StringComparison.OrdinalIgnoreCase)
+                                            ? "Id" + x.DeclaringEntity.Name
+                                            : x.Name;
+                                                
+                                        linkedEntity.AddProperty(x.Clone(linkedEntity, propertyName));
+                                    });
+
+            linkedEntity.SetPrimaryKey(linkedEntity.GetDeclaredProperties().ToList());
+            
+            return linkedEntity;
         }
 
         private Entity AddEntity(Entity entity, bool runConventions = true)
