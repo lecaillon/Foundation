@@ -75,6 +75,11 @@ namespace Foundation.Metadata
         public static string Format(IEnumerable<Property> properties, bool includeTypes = false)
             => "{" + string.Join(", ", properties.Select(p => "'" + p.Name + "'" + (includeTypes ? " : " + p.ClrType.DisplayName(fullName: false) : ""))) + "}";
 
+        /// <summary>
+        ///     Gets all primary or alternate keys that use this property. Returns an empty list if none.
+        /// </summary>
+        public virtual IEnumerable<Key> GetContainingKeys() => Keys ?? Enumerable.Empty<Key>();
+
         internal Property Clone(Entity targetEntity, string propertyName = null)
         {
             Check.NotNull(targetEntity, nameof(targetEntity));

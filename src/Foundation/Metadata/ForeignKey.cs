@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -23,12 +22,15 @@ namespace Foundation.Metadata
             PrincipalKey = principalKey;
             DeclaringEntity = dependentEntity;
             PrincipalEntity = principalEntity;
+
+            AreCompatible(principalKey.Properties, dependentProperties, principalEntity, dependentEntity, shouldThrow: true);
+
         }
 
         /// <summary>
         ///     Gets the foreign key properties in the dependent entity.
         /// </summary>
-        public IEnumerable<Property> Properties { get; }
+        public IReadOnlyList<Property> Properties { get; }
 
         /// <summary>
         ///     Gets the dependent entity type. This may be different from the type that <see cref="Properties" />
@@ -77,5 +79,39 @@ namespace Foundation.Metadata
         public DeleteBehavior DeleteBehavior { get; }
 
         public bool IsSelfReferencing => DeclaringEntity == PrincipalEntity;
+
+        public static bool AreCompatible(IReadOnlyList<Property> principalProperties, IReadOnlyList<Property> dependentProperties, Entity principalEntity, Entity dependentEntity, bool shouldThrow)
+        {
+            Check.NotNull(principalProperties, nameof(principalProperties));
+            Check.NotNull(dependentProperties, nameof(dependentProperties));
+            Check.NotNull(principalEntity, nameof(principalEntity));
+            Check.NotNull(dependentEntity, nameof(dependentEntity));
+
+            if (!ArePropertyCountsEqual(principalProperties, dependentProperties))
+            {
+                if (shouldThrow)
+                {
+                    throw new InvalidOperationException(ResX.ForeignKeyCountMismatch(Property.Format(dependentProperties), dependentEntity.Name, Property.Format(principalProperties), principalEntity.Name));
+                }
+                return false;
+            }
+
+            if (!ArePropertyTypesCompatible(principalProperties, dependentProperties))
+            {
+                if (shouldThrow)
+                {
+                    throw new InvalidOperationException(ResX.ForeignKeyTypeMismatch(Property.Format(dependentProperties), dependentEntity.Name, Property.Format(principalProperties), principalEntity.Name));
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool ArePropertyCountsEqual(IReadOnlyList<Property> principalProperties, IReadOnlyList<Property> dependentProperties) 
+            => principalProperties.Count == dependentProperties.Count;
+
+        private static bool ArePropertyTypesCompatible(IReadOnlyList<Property> principalProperties, IReadOnlyList<Property> dependentProperties)
+            => principalProperties.Select(p => p.ClrType.UnwrapNullableType()).SequenceEqual(dependentProperties.Select(p => p.ClrType.UnwrapNullableType()));
     }
 }

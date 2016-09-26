@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 using Foundation.Metadata;
+using Foundation.Utilities;
 
 namespace Foundation
 {
@@ -19,6 +20,8 @@ namespace Foundation
 
             return builder.ToString();
         }
+
+        #region Entity
 
         public static string ToDebugString(this Entity entity, bool singleLine = true, string indent = "")
         {
@@ -83,6 +86,33 @@ namespace Foundation
 
             return builder.ToString();
         }
+
+        /// <summary>
+        ///     Determines if an entity derives from (or is the same as) a given entity.
+        /// </summary>
+        /// <param name="entity"> The base entity type. </param>
+        /// <param name="derived"> The entity to check if it derives from <paramref name="entity" />. </param>
+        /// <returns>
+        ///     True if <paramref name="derived" /> derives from (or is the same as) <paramref name="entity" />, otherwise false.
+        /// </returns>
+        public static bool IsAssignableFrom(this Entity entity, Entity derived)
+        {
+            Check.NotNull(entity, nameof(entity));
+            Check.NotNull(derived, nameof(derived));
+
+            var baseType = derived;
+            while (baseType != null)
+            {
+                if (baseType == entity)
+                {
+                    return true;
+                }
+                baseType = baseType.BaseType;
+            }
+            return false;
+        }
+
+        #endregion
 
         public static string ToDebugString(this Property property, bool singleLine = true, string indent = "")
         {

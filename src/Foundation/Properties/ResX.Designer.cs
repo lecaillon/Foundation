@@ -64,6 +64,14 @@ namespace Foundation
         }
 
         /// <summary>
+        /// The foreign key {foreignKey} cannot be added to the entity '{entity}' because a foreign key on the same properties already exists on entity '{duplicateEntity}' and also targets the key {key} on '{principal}'.
+        /// </summary>
+        public static string DuplicateForeignKey(object foreignKey, object entity, object duplicateEntity, object key, object principal)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("DuplicateForeignKey", "foreignKey", "entity", "duplicateEntity", "key", "principal"), foreignKey, entity, duplicateEntity, key, principal);
+        }
+
+        /// <summary>
         /// The key {key} cannot be added to the entity type '{entityType}' because a key on the same properties already exists on entity type '{duplicateEntityType}'.
         /// </summary>
         public static string DuplicateKey(object key, object entityType, object duplicateEntityType)
@@ -85,6 +93,38 @@ namespace Foundation
         public static string EntityKeyAlreadyExists
         {
             get { return GetString("EntityKeyAlreadyExists"); }
+        }
+
+        /// <summary>
+        /// The number of properties specified for the foreign key {foreignKey} on entity '{dependent}' does not match the number of properties in the principal key {principalKey} on entity '{principal}'.
+        /// </summary>
+        public static string ForeignKeyCountMismatch(object foreignKey, object dependent, object principalKey, object principal)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyCountMismatch", "foreignKey", "dependent", "principalKey", "principal"), foreignKey, dependent, principalKey, principal);
+        }
+
+        /// <summary>
+        /// The specified foreign key properties {foreignKey} are not declared on the entity '{entity}'. Ensure foreign key properties are declared on the target entity.
+        /// </summary>
+        public static string ForeignKeyPropertiesWrongEntity(object foreignKey, object entity)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyPropertiesWrongEntity", "foreignKey", "entity"), foreignKey, entity);
+        }
+
+        /// <summary>
+        /// The property '{property}' cannot be part of a foreign key on '{entity}' because it is contained in a key defined on a base entity.
+        /// </summary>
+        public static string ForeignKeyPropertyInKey(object property, object entity)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyPropertyInKey", "property", "entity"), property, entity);
+        }
+
+        /// <summary>
+        /// The types of the properties specified for the foreign key {foreignKey} on entity '{dependent}' do not match the types of the properties in the principal key {principalKey} on entity '{principal}'.
+        /// </summary>
+        public static string ForeignKeyTypeMismatch(object foreignKey, object dependent, object principalKey, object principal)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyTypeMismatch", "foreignKey", "dependent", "principalKey", "principal"), foreignKey, dependent, principalKey, principal);
         }
 
         /// <summary>

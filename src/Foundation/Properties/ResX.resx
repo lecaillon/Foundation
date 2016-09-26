@@ -135,6 +135,9 @@
   <data name="DuplicateEntity" xml:space="preserve">
     <value>The entity '{entity}' cannot be added to the model because an entity with the same name already exists.</value>
   </data>
+  <data name="DuplicateForeignKey" xml:space="preserve">
+    <value>The foreign key {foreignKey} cannot be added to the entity '{entity}' because a foreign key on the same properties already exists on entity '{duplicateEntity}' and also targets the key {key} on '{principal}'.</value>
+  </data>
   <data name="DuplicateKey" xml:space="preserve">
     <value>The key {key} cannot be added to the entity type '{entityType}' because a key on the same properties already exists on entity type '{duplicateEntityType}'.</value>
   </data>
@@ -143,6 +146,18 @@
   </data>
   <data name="EntityKeyAlreadyExists" xml:space="preserve">
     <value>Une clé primaire existe déjà.</value>
+  </data>
+  <data name="ForeignKeyCountMismatch" xml:space="preserve">
+    <value>The number of properties specified for the foreign key {foreignKey} on entity '{dependent}' does not match the number of properties in the principal key {principalKey} on entity '{principal}'.</value>
+  </data>
+  <data name="ForeignKeyPropertiesWrongEntity" xml:space="preserve">
+    <value>The specified foreign key properties {foreignKey} are not declared on the entity '{entity}'. Ensure foreign key properties are declared on the target entity.</value>
+  </data>
+  <data name="ForeignKeyPropertyInKey" xml:space="preserve">
+    <value>The property '{property}' cannot be part of a foreign key on '{entity}' because it is contained in a key defined on a base entity.</value>
+  </data>
+  <data name="ForeignKeyTypeMismatch" xml:space="preserve">
+    <value>The types of the properties specified for the foreign key {foreignKey} on entity '{dependent}' do not match the types of the properties in the principal key {principalKey} on entity '{principal}'.</value>
   </data>
   <data name="IncoherentAssociationTableNames" xml:space="preserve">
     <value>Navigation and inverse properties must define the same association table name.</value>

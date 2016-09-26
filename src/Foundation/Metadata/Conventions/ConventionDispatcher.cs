@@ -90,5 +90,21 @@ namespace Foundation.Metadata.Conventions
 
             return key;
         }
+
+        public ForeignKey OnForeignKeyAdded(ForeignKey foreignKey)
+        {
+            Check.NotNull(foreignKey, nameof(foreignKey));
+
+            foreach (var relationshipConvention in _conventionSet.ForeignKeyAddedConventions)
+            {
+                foreignKey = relationshipConvention.Apply(foreignKey);
+                if (foreignKey == null)
+                {
+                    break;
+                }
+            }
+
+            return foreignKey;
+        }
     }
 }

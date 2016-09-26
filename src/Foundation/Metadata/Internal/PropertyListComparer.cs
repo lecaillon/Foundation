@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Foundation.Metadata
+namespace Foundation.Metadata.Internal
 {
     public class PropertyListComparer : IComparer<IReadOnlyList<Property>>, IEqualityComparer<IReadOnlyList<Property>>
     {

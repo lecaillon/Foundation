@@ -20,6 +20,7 @@ namespace Foundation.Metadata
         private readonly SortedDictionary<string, Property> _properties;
         private readonly SortedDictionary<IReadOnlyList<Property>, Key> _keys = new SortedDictionary<IReadOnlyList<Property>, Key>(PropertyListComparer.Instance);
         private readonly SortedDictionary<string, Navigation> _navigations = new SortedDictionary<string, Navigation>(StringComparer.Ordinal);
+        private readonly SortedSet<ForeignKey> _foreignKeys = new SortedSet<ForeignKey>(ForeignKeyComparer.Instance);
         private Entity _baseType;
         private Key _primaryKey;
 
@@ -96,16 +97,6 @@ namespace Foundation.Metadata
         public Entity BaseType => _baseType;
 
         /// <summary>
-        ///     Gets the foreign keys defined on this entity.
-        /// </summary>
-        public IReadOnlyList<ForeignKey> ForeignKeys { get; }
-
-        /// <summary>
-        ///     Gets the indexes defined on this entity.
-        /// </summary>
-        public IReadOnlyList<Index> Indexes { get; }
-
-        /// <summary>
         ///     Attempts to add the specified base entity to this entity.
         /// </summary>
         /// <returns> This entity. </returns>
@@ -130,6 +121,23 @@ namespace Foundation.Metadata
         ///     Gets the entities directly derived from this entity.
         /// </summary>
         public IReadOnlyList<Entity> GetDirectlyDerivedEntities() => _directlyDerivedEntities;
+
+        /// <summary>
+        ///     Gets all the entities derived from this entity.
+        /// </summary>
+        public IEnumerable<Entity> GetDerivedEntities()
+        {
+            var derivedEntities = new List<Entity>();
+            var entity = this;
+            var index = 0;
+            while (entity != null)
+            {
+                derivedEntities.AddRange(entity.GetDirectlyDerivedEntities());
+                entity = derivedEntities.Count > index ? derivedEntities[index] : null;
+                index++;
+            }
+            return derivedEntities;
+        }
 
         #region Primary and Candidate Keys
 
@@ -432,7 +440,7 @@ namespace Foundation.Metadata
 
             var navigation = AddNavigation(targetEntity, navigationProperty, associationTableName);
 
-
+            // Model.AddLinkedEntity plutot ici
 
 
 
@@ -461,7 +469,7 @@ namespace Foundation.Metadata
             Check.NotEmpty(associationTableName, nameof(associationTableName));
 
             var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
-
+            //var fk = linkedEntity.AddForeignKey(
 
             throw new NotImplementedException();
         }
@@ -473,6 +481,156 @@ namespace Foundation.Metadata
 
         #endregion
 
+        #region Foreign Keys
+
+        public ForeignKey FindForeignKey(Property property, Key principalKey, Entity principalEntity) => FindForeignKey(new[] { property }, principalKey, principalEntity);
+
+        /// <summary>
+        ///     Gets the foreign key for the given properties that points to a given primary or alternate key. Returns null
+        ///     if no foreign key is found.
+        /// </summary>
+        /// <param name="properties"> The properties that the foreign key is defined on. </param>
+        /// <param name="principalKey"> The primary or alternate key that is referenced. </param>
+        /// <param name="principalEntity">
+        ///     The entity that the relationship targets. This may be different from the type that <paramref name="principalKey" />
+        ///     is defined on when the relationship targets a derived type in an inheritance hierarchy (since the key is defined on the
+        ///     base type of the hierarchy).
+        /// </param>
+        /// <returns> The foreign key, or null if none is defined. </returns>
+        public ForeignKey FindForeignKey(IReadOnlyList<Property> properties, Key principalKey, Entity principalEntity)
+        {
+            Check.HasNoNulls(properties, nameof(properties));
+            Check.NotEmpty(properties, nameof(properties));
+            Check.NotNull(principalKey, nameof(principalKey));
+            Check.NotNull(principalEntity, nameof(principalEntity));
+
+            return FindDeclaredForeignKey(properties, principalKey, principalEntity) ?? _baseType?.FindForeignKey(properties, principalKey, principalEntity);
+        }
+
+        public ForeignKey FindDeclaredForeignKey(IReadOnlyList<Property> properties, Key principalKey, Entity principalEntity)
+        {
+            Check.NotEmpty(properties, nameof(properties));
+            Check.NotNull(principalKey, nameof(principalKey));
+            Check.NotNull(principalEntity, nameof(principalEntity));
+
+            return FindDeclaredForeignKeys(properties).SingleOrDefault(fk => PropertyListComparer.Instance.Equals(fk.PrincipalKey.Properties, principalKey.Properties) &&
+                                                                             StringComparer.Ordinal.Equals(fk.PrincipalEntity.Name, principalEntity.Name));
+        }
+
+        public IEnumerable<ForeignKey> FindDeclaredForeignKeys(IReadOnlyList<Property> properties)
+        {
+            Check.NotEmpty(properties, nameof(properties));
+
+            return _foreignKeys.Where(fk => PropertyListComparer.Instance.Equals(fk.Properties, properties));
+        }
+
+        public IEnumerable<ForeignKey> FindForeignKeysInHierarchy(IReadOnlyList<Property> properties, Key principalKey, Entity principalEntity)
+            => ToEnumerable(FindForeignKey(properties, principalKey, principalEntity)).Concat(FindDerivedForeignKeys(properties, principalKey, principalEntity));
+
+        public IEnumerable<ForeignKey> FindDerivedForeignKeys(IReadOnlyList<Property> properties, Key principalKey, Entity principalEntity)
+            => GetDerivedEntities().Select(et => et.FindDeclaredForeignKey(properties, principalKey, principalEntity)).Where(fk => fk != null);
+
+        internal ForeignKey AddForeignKey(Property property, Key principalKey, Entity principalEntity) => AddForeignKey(new[] { property }, principalKey, principalEntity);
+
+        public IEnumerable<ForeignKey> GetReferencingForeignKeys() => _baseType?.GetReferencingForeignKeys().Concat(GetDeclaredReferencingForeignKeys()) 
+                                                                      ?? GetDeclaredReferencingForeignKeys();
+
+        public IEnumerable<ForeignKey> GetDeclaredReferencingForeignKeys() => DeclaredReferencingForeignKeys ?? Enumerable.Empty<ForeignKey>();
+
+        private List<ForeignKey> DeclaredReferencingForeignKeys { get; set; }
+
+        /// <summary>
+        ///     Gets the foreign keys defined on this entity.
+        /// </summary>
+        /// <returns> The foreign keys defined on this entity. </returns>
+        public virtual IEnumerable<ForeignKey> GetForeignKeys() => _baseType?.GetForeignKeys().Concat(_foreignKeys) ?? _foreignKeys;
+
+        /// <summary>
+        ///     Adds a new relationship to this entity.
+        /// </summary>
+        /// <param name="properties"> The properties that the foreign key is defined on. </param>
+        /// <param name="principalKey"> The primary or alternate key that is referenced. </param>
+        /// <param name="principalEntity">
+        ///     The entity type that the relationship targets. This may be different from the type that <paramref name="principalKey" />
+        ///     is defined on when the relationship targets a derived type in an inheritance hierarchy (since the key is defined on the
+        ///     base type of the hierarchy).
+        /// </param>
+        /// <returns> The newly created foreign key. </returns>
+        internal ForeignKey AddForeignKey(IReadOnlyList<Property> properties, Key principalKey, Entity principalEntity, bool runConventions = true)
+        {
+            Check.NotEmpty(properties, nameof(properties));
+            Check.HasNoNulls(properties, nameof(properties));
+            Check.NotNull(principalKey, nameof(principalKey));
+            Check.NotNull(principalEntity, nameof(principalEntity));
+
+            foreach (var property in properties)
+            {
+                var actualProperty = FindProperty(property.Name);
+                if (actualProperty == null || !actualProperty.DeclaringEntity.IsAssignableFrom(property.DeclaringEntity))
+                {
+                    throw new InvalidOperationException(ResX.ForeignKeyPropertiesWrongEntity(Property.Format(properties), Name));
+                }
+
+                if (actualProperty.GetContainingKeys().Any(k => k.DeclaringEntity != this))
+                {
+                    throw new InvalidOperationException(ResX.ForeignKeyPropertyInKey(actualProperty.Name, Name));
+                }
+            }
+
+            var duplicateForeignKey = FindForeignKeysInHierarchy(properties, principalKey, principalEntity).FirstOrDefault();
+            if (duplicateForeignKey != null)
+            {
+                throw new InvalidOperationException(ResX.DuplicateForeignKey(Property.Format(properties), Name, duplicateForeignKey.DeclaringEntity.Name, Property.Format(principalKey.Properties), principalEntity.Name));
+            }
+
+            var foreignKey = new ForeignKey(properties, principalKey, this, principalEntity);
+
+            _foreignKeys.Add(foreignKey);
+
+            foreach (var property in properties)
+            {
+                var currentKeys = property.ForeignKeys;
+                if (currentKeys == null)
+                {
+                    property.ForeignKeys = new ForeignKey[] { foreignKey };
+                }
+                else
+                {
+                    var newKeys = currentKeys.ToList();
+                    newKeys.Add(foreignKey);
+                    property.ForeignKeys = newKeys;
+                }
+            }
+
+            if (principalKey.ReferencingForeignKeys == null)
+            {
+                principalKey.ReferencingForeignKeys = new List<ForeignKey> { foreignKey };
+            }
+            else
+            {
+                principalKey.ReferencingForeignKeys.Add(foreignKey);
+            }
+
+            if (principalEntity.DeclaredReferencingForeignKeys == null)
+            {
+                principalEntity.DeclaredReferencingForeignKeys = new List<ForeignKey> { foreignKey };
+            }
+            else
+            {
+                principalEntity.DeclaredReferencingForeignKeys.Add(foreignKey);
+            }
+
+            if (runConventions)
+                Model.ConventionDispatcher.OnForeignKeyAdded(foreignKey);
+
+            return foreignKey;
+        }
+
+        #endregion
+
         public override string ToString() => this.ToDebugString();
+
+        private static IEnumerable<T> ToEnumerable<T>(T element) where T : class 
+            => element == null ? Enumerable.Empty<T>() : new[] { element };
     }
 }

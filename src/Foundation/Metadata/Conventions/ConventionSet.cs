@@ -31,5 +31,10 @@ namespace Foundation.Metadata.Conventions
         ///     Conventions to run when a key is added.
         /// </summary>
         public virtual IList<IKeyConvention> KeyAddedConventions { get; } = new List<IKeyConvention>();
+
+        /// <summary>
+        ///     Conventions to run when a foreign key is added.
+        /// </summary>
+        public virtual IList<IForeignKeyConvention> ForeignKeyAddedConventions { get; } = new List<IForeignKeyConvention>();
     }
 }

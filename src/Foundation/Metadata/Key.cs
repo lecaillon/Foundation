@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -29,6 +30,10 @@ namespace Foundation.Metadata
         public Entity DeclaringEntity => Properties[0].DeclaringEntity;
 
         public bool IsPrimaryKey => this == DeclaringEntity.FindPrimaryKey();
+
+        public List<ForeignKey> ReferencingForeignKeys { get; set; }
+
+        public IEnumerable<ForeignKey> GetReferencingForeignKeys() => ReferencingForeignKeys ?? Enumerable.Empty<ForeignKey>();
 
         public override string ToString() => this.ToDebugString();
     }

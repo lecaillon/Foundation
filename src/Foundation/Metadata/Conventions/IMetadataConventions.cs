@@ -24,4 +24,9 @@
     {
         Key Apply(Key key);
     }
+
+    public interface IForeignKeyConvention
+    {
+        ForeignKey Apply(ForeignKey foreignKey);
+    }
 }
