@@ -48,6 +48,11 @@ namespace Foundation.Metadata
             return FindEntity(typeof(T));
         }
 
+        /// <summary>
+        ///     Gets the entity with the given name. Returns null if no entity type with the given name is found.
+        /// </summary>
+        /// <param name="name"> The name of the entity type to find. </param>
+        /// <returns> The entity type, or null if none are found. </returns>
         public virtual Entity FindEntity(string name)
         {
             Check.NotEmpty(name, nameof(name));
@@ -92,6 +97,11 @@ namespace Foundation.Metadata
             return AddEntity(entity, runConventions);
         }
 
+        /// <summary>
+        ///     Adds a shadow state entity type to the model.
+        /// </summary>
+        /// <param name="name"> The name of the entity to be added. </param>
+        /// <returns> The new entity type. </returns>
         internal Entity AddEntity(string name, bool runConventions = true)
         {
             Check.NotEmpty(name, nameof(name));
@@ -105,6 +115,8 @@ namespace Foundation.Metadata
         ///     Add a shadow entity to this model used to represent a many to many association between two entities.
         /// </summary>
         /// <param name="name"> The name of the entity to be added. </param>
+        /// <param name="entity1"> Declaring entity </param>
+        /// <param name="entity2"> Targeting entity </param>
         /// <returns> The new entity. </returns>
         internal Entity AddLinkedEntity(string name, Entity entity1, Entity entity2)
         {
