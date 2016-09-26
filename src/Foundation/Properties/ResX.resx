@@ -156,6 +156,9 @@
   <data name="ForeignKeyPropertyInKey" xml:space="preserve">
     <value>The property '{property}' cannot be part of a foreign key on '{entity}' because it is contained in a key defined on a base entity.</value>
   </data>
+  <data name="ForeignKeyReferencedEntityKeyMismatch" xml:space="preserve">
+    <value>The provided principal entity key '{principalKey}' is not a key on the entity '{principalEntity}'.</value>
+  </data>
   <data name="ForeignKeyTypeMismatch" xml:space="preserve">
     <value>The types of the properties specified for the foreign key {foreignKey} on entity '{dependent}' do not match the types of the properties in the principal key {principalKey} on entity '{principal}'.</value>
   </data>

@@ -141,6 +141,8 @@ namespace Foundation.Metadata
 
         #region Primary and Candidate Keys
 
+        public IEnumerable<Key> GetKeys() => _baseType?.GetKeys().Concat(_keys.Values) ?? _keys.Values;
+
         internal Key GetOrAddKey(IReadOnlyList<Property> properties) => FindKey(properties) ?? AddKey(properties);
 
         /// <summary>

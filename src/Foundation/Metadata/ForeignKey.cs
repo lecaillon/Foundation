@@ -25,6 +25,10 @@ namespace Foundation.Metadata
 
             AreCompatible(principalKey.Properties, dependentProperties, principalEntity, dependentEntity, shouldThrow: true);
 
+            if (!principalEntity.GetKeys().Contains(principalKey))
+            {
+                throw new InvalidOperationException(ResX.ForeignKeyReferencedEntityKeyMismatch(Property.Format(principalKey.Properties), principalEntity.Name));
+            }
         }
 
         /// <summary>

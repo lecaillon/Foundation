@@ -120,6 +120,14 @@ namespace Foundation
         }
 
         /// <summary>
+        /// The provided principal entity key '{principalKey}' is not a key on the entity '{principalEntity}'.
+        /// </summary>
+        public static string ForeignKeyReferencedEntityKeyMismatch(object principalKey, object principalEntity)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyReferencedEntityKeyMismatch", "principalKey", "principalEntity"), principalKey, principalEntity);
+        }
+
+        /// <summary>
         /// The types of the properties specified for the foreign key {foreignKey} on entity '{dependent}' do not match the types of the properties in the principal key {principalKey} on entity '{principal}'.
         /// </summary>
         public static string ForeignKeyTypeMismatch(object foreignKey, object dependent, object principalKey, object principal)
