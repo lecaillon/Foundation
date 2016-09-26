@@ -77,6 +77,11 @@ namespace Foundation.Metadata
         /// <returns> The entity. </returns>
         internal virtual Entity GetOrAddEntity(string name) => FindEntity(name) ?? AddEntity(name);
 
+        /// <summary>
+        ///     Adds an entity to the model.
+        /// </summary>
+        /// <param name="clrType"> The CLR class that is used to represent instances of this entity type. </param>
+        /// <returns> The new entity. </returns>
         internal Entity AddEntity(Type type, bool runConventions = true)
         {
             Check.NotNull(type, nameof(type));
@@ -96,6 +101,11 @@ namespace Foundation.Metadata
             return AddEntity(entity, runConventions);
         }
 
+        /// <summary>
+        ///     Add a shadow entity to this model used to represent a many to many association between two entities.
+        /// </summary>
+        /// <param name="name"> The name of the entity to be added. </param>
+        /// <returns> The new entity. </returns>
         internal Entity AddLinkedEntity(string name, Entity entity1, Entity entity2)
         {
             Check.NotEmpty(name, nameof(name));
