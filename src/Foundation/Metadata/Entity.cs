@@ -389,16 +389,16 @@ namespace Foundation.Metadata
 
         #region Navigation
 
-        public virtual Navigation FindNavigation(PropertyInfo propertyInfo) => FindNavigation(Check.NotNull(propertyInfo, nameof(propertyInfo)).Name);
+        public Navigation FindNavigation(PropertyInfo propertyInfo) => FindNavigation(Check.NotNull(propertyInfo, nameof(propertyInfo)).Name);
 
-        public virtual Navigation FindNavigation(string name)
+        public Navigation FindNavigation(string name)
         {
             Check.NotEmpty(name, nameof(name));
 
             return FindDeclaredNavigation(name) ?? _baseType?.FindNavigation(name);
         }
 
-        public virtual Navigation FindDeclaredNavigation(string name)
+        public Navigation FindDeclaredNavigation(string name)
         {
             Check.NotEmpty(name, nameof(name));
 
@@ -406,11 +406,24 @@ namespace Foundation.Metadata
             return _navigations.TryGetValue(name, out navigation) ? navigation : null;
         }
 
-        public virtual IEnumerable<Navigation> GetDeclaredNavigations() => _navigations.Values;
+        public IEnumerable<Navigation> GetDeclaredNavigations() => _navigations.Values;
 
-        public virtual IEnumerable<Navigation> GetNavigations() => _baseType?.GetNavigations().Concat(_navigations.Values) ?? _navigations.Values;
+        public IEnumerable<Navigation> GetNavigations() => _baseType?.GetNavigations().Concat(_navigations.Values) ?? _navigations.Values;
 
-        internal Tuple<Navigation, Navigation> AddRelationship(Entity targetEntity, PropertyInfo navigationProperty, PropertyInfo inverseProperty)
+        internal void AddManyToManyRelationship(Entity targetEntity, PropertyInfo navigationProperty)
+        {
+            Check.NotNull(targetEntity, nameof(targetEntity));
+            Check.NotNull(navigationProperty, nameof(navigationProperty));
+            
+            string associationTableName = navigationProperty.GetCustomAttribute<RelationshipAttribute>()?.AssociationTableName ??
+                                          $"{Name}_{targetEntity.Name}";
+
+            var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
+
+
+        }
+
+        internal void AddManyToManyRelationship(Entity targetEntity, PropertyInfo navigationProperty, PropertyInfo inverseProperty)
         {
             Check.NotNull(targetEntity, nameof(targetEntity));
             Check.NotNull(navigationProperty, nameof(navigationProperty));
@@ -437,48 +450,9 @@ namespace Foundation.Metadata
                     : inverseAssociationTableName;
             }
 
-            if (Model.FindEntity(associationTableName) != null)
-                throw new InvalidOperationException(ResX.DuplicateEntity(associationTableName));
-
-            var navigation = AddNavigation(targetEntity, navigationProperty, associationTableName);
-
-            // Model.AddLinkedEntity plutot ici
-
-
-
-
-            throw new NotImplementedException();
-        }
-
-        internal Navigation AddNavigation(Entity targetEntity, PropertyInfo navigationProperty)
-        {
-            Check.NotNull(targetEntity, nameof(targetEntity));
-            Check.NotNull(navigationProperty, nameof(navigationProperty));
-
-            string associationTableName = navigationProperty.GetCustomAttribute<RelationshipAttribute>()?.AssociationTableName ??
-                                          $"{Name}_{targetEntity.Name}";
-
-            if (Model.FindEntity(associationTableName) != null)
-                throw new InvalidOperationException(ResX.DuplicateEntity(associationTableName));
-
-            return AddNavigation(targetEntity, navigationProperty, associationTableName);
-        }
-
-        private Navigation AddNavigation(Entity targetEntity, PropertyInfo navigation, string associationTableName)
-        {
-            Check.NotNull(targetEntity, nameof(targetEntity));
-            Check.NotNull(navigation, nameof(navigation));
-            Check.NotEmpty(associationTableName, nameof(associationTableName));
-
             var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
-            //var fk = linkedEntity.AddForeignKey(
 
-            throw new NotImplementedException();
-        }
 
-        private Navigation AddInverseNavigation()
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

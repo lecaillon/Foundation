@@ -70,11 +70,11 @@ namespace Foundation.Metadata.Conventions
                 var inverseProperty = relationshipCandidate.InverseProperties.SingleOrDefault();
                 if (inverseProperty == null)
                 {
-                    entity.AddNavigation(relationshipCandidate.TargetEntity, navigationProperty);
+                    entity.AddManyToManyRelationship(relationshipCandidate.TargetEntity, navigationProperty);
                 }
                 else
                 {
-                    entity.AddRelationship(relationshipCandidate.TargetEntity, navigationProperty, inverseProperty);
+                    entity.AddManyToManyRelationship(relationshipCandidate.TargetEntity, navigationProperty, inverseProperty);
                 }
             }
         }
