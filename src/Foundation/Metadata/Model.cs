@@ -112,7 +112,14 @@ namespace Foundation.Metadata
         }
 
         /// <summary>
-        ///     Add a shadow entity to this model used to represent a many to many association between two entities.
+        ///     <para>
+        ///         Add a shadow entity to this model used to represent a many to many association between two entities.
+        ///     </para>
+        ///     <para>
+        ///         Add PK
+        ///         Add FK targeting <paramref name="entity1"/> 
+        ///         Add FK targeting <paramref name="entity2"/> .
+        ///     </para>
         /// </summary>
         /// <param name="name"> The name of the entity to be added. </param>
         /// <param name="entity1"> Declaring entity </param>
@@ -142,7 +149,9 @@ namespace Foundation.Metadata
                                     });
 
             linkedEntity.SetPrimaryKey(linkedEntity.GetDeclaredProperties().ToList());
-            
+            linkedEntity.AddForeignKey(linkedEntity.GetDeclaredProperties().Where(x => x.PropertyInfo.DeclaringType == entity1.ClrType).ToList(), entity1.FindPrimaryKey(), entity1);
+            linkedEntity.AddForeignKey(linkedEntity.GetDeclaredProperties().Where(x => x.PropertyInfo.DeclaringType == entity2.ClrType).ToList(), entity2.FindPrimaryKey(), entity2);
+
             return linkedEntity;
         }
 
