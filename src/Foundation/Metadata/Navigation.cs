@@ -9,11 +9,13 @@ namespace Foundation.Metadata
     /// </summary>
     public class Navigation : PropertyBase
     {
-        public Navigation(PropertyInfo navigationProperty, ForeignKey foreignKey) : base(Check.NotNull(navigationProperty, nameof(navigationProperty)).Name, navigationProperty)
+        public Navigation(PropertyInfo navigationProperty, ForeignKey fkToLinkedEntity, ForeignKey fkToTargetedEntity) : base(Check.NotNull(navigationProperty, nameof(navigationProperty)).Name, navigationProperty)
         {
-            Check.NotNull(foreignKey, nameof(foreignKey));
+            Check.NotNull(fkToLinkedEntity, nameof(fkToLinkedEntity));
+            Check.NotNull(fkToTargetedEntity, nameof(fkToTargetedEntity));
 
-            ForeignKey = foreignKey;
+            ForeignKeyToLinkedEntity = fkToLinkedEntity;
+            ForeignKeyToTargetedEntity = fkToTargetedEntity;
         }
 
         /// <summary>
@@ -22,28 +24,19 @@ namespace Foundation.Metadata
         public override Entity DeclaringEntity { get; }
 
         /// <summary>
-        ///     Gets the foreign key that defines the relationship this navigation property will navigate.
+        ///     Gets the foreign key used to navigate to the linked entity.
         /// </summary>
-        public ForeignKey ForeignKey { get; }
+        public ForeignKey ForeignKeyToLinkedEntity { get; }
 
         /// <summary>
-        ///     Gets a value indicating whether the given navigation property is the navigation property on the dependent entity
-        ///     type that points to the principal entity.
+        ///     Gets the foreign key used to navigate from the linked entity to the targeted entity.
         /// </summary>
-        /// <returns>
-        ///     True if the given navigation property is the navigation property on the dependent entity
-        ///     type that points to the principal entity, otherwise false.
-        /// </returns>
-        public bool IsDependentToPrincipal => ForeignKey.DependentToPrincipal == this;
+        public ForeignKey ForeignKeyToTargetedEntity { get; }
 
         /// <summary>
-        ///     Gets the entity type that a given navigation property will hold an instance of
-        ///     (or hold instances of if it is a collection navigation).
+        ///     Gets the entity that this navigation targets.
         /// </summary>
-        /// <returns> The target entity type. </returns>
-        public Entity GetTargetType()
-        {
-            return IsDependentToPrincipal ? ForeignKey.PrincipalEntity : ForeignKey.DeclaringEntity;
-        }
+        /// <returns> The target entity. </returns>
+        public Entity GetTargetEntity() => ForeignKeyToTargetedEntity.PrincipalEntity;
     }
 }

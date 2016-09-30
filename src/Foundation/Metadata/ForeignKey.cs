@@ -56,16 +56,6 @@ namespace Foundation.Metadata
         public Key PrincipalKey { get; }
 
         /// <summary>
-        ///     Gets the navigation property on the dependent entity type that points to the principal entity.
-        /// </summary>
-        public Navigation DependentToPrincipal { get; }
-
-        /// <summary>
-        ///     Gets the navigation property on the principal entity type that points to the dependent entity.
-        /// </summary>
-        public Navigation PrincipalToDependent { get; }
-
-        /// <summary>
         ///     Gets a value indicating whether the values assigned to the foreign key properties are unique.
         /// </summary>
         public bool IsUnique { get; }
