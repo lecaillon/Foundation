@@ -53,7 +53,7 @@ namespace Foundation.Metadata
         /// </summary>
         /// <param name="name"> The name of the entity type to find. </param>
         /// <returns> The entity type, or null if none are found. </returns>
-        public virtual Entity FindEntity(string name)
+        public Entity FindEntity(string name)
         {
             Check.NotEmpty(name, nameof(name));
 
@@ -80,7 +80,7 @@ namespace Foundation.Metadata
         ///     Attempts to add the specified entity to this model.
         /// </summary>
         /// <returns> The entity. </returns>
-        internal virtual Entity GetOrAddEntity(string name) => FindEntity(name) ?? AddEntity(name);
+        internal Entity GetOrAddEntity(string name) => FindEntity(name) ?? AddEntity(name);
 
         /// <summary>
         ///     Adds an entity to the model.

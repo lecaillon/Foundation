@@ -7,7 +7,7 @@ namespace Foundation.Metadata.Internal
     {
         public static readonly ForeignKeyComparer Instance = new ForeignKeyComparer();
 
-        public virtual int Compare(ForeignKey x, ForeignKey y)
+        public int Compare(ForeignKey x, ForeignKey y)
         {
             var result = PropertyListComparer.Instance.Compare(x.Properties, y.Properties);
             if (result != 0)
@@ -24,9 +24,9 @@ namespace Foundation.Metadata.Internal
             return StringComparer.Ordinal.Compare(x.PrincipalEntity.Name, y.PrincipalEntity.Name);
         }
 
-        public virtual bool Equals(ForeignKey x, ForeignKey y) => Compare(x, y) == 0;
+        public bool Equals(ForeignKey x, ForeignKey y) => Compare(x, y) == 0;
 
-        public virtual int GetHashCode(ForeignKey obj) =>
+        public int GetHashCode(ForeignKey obj) =>
             unchecked(
                 (((PropertyListComparer.Instance.GetHashCode(obj.PrincipalKey.Properties) * 397)
                  ^ PropertyListComparer.Instance.GetHashCode(obj.Properties)) * 397)

@@ -40,6 +40,14 @@ namespace Foundation
         }
 
         /// <summary>
+        /// The navigation property '{navigation}' cannot be added to the entity '{entity}' because a property with the same name already exists on entity '{duplicateEntity}'.
+        /// </summary>
+        public static string ConflictingProperty(object navigation, object entity, object duplicateEntity)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ConflictingProperty", "navigation", "entity", "duplicateEntity"), navigation, entity, duplicateEntity);
+        }
+
+        /// <summary>
         /// A key cannot be configured on '{derivedType}' because it is a derived type. The key must be configured on the root type '{rootType}'.
         /// </summary>
         public static string DerivedEntityKey(object derivedType, object rootType)
@@ -77,6 +85,14 @@ namespace Foundation
         public static string DuplicateKey(object key, object entityType, object duplicateEntityType)
         {
             return string.Format(CultureInfo.CurrentCulture, GetString("DuplicateKey", "key", "entityType", "duplicateEntityType"), key, entityType, duplicateEntityType);
+        }
+
+        /// <summary>
+        /// The navigation property '{navigation}' cannot be added to the entity '{entity}' because a navigation property with the same name already exists on entity '{duplicateEntity}'.
+        /// </summary>
+        public static string DuplicateNavigation(object navigation, object entity, object duplicateEntity)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("DuplicateNavigation", "navigation", "entity", "duplicateEntity"), navigation, entity, duplicateEntity);
         }
 
         /// <summary>

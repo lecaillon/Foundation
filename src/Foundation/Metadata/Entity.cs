@@ -227,16 +227,16 @@ namespace Foundation.Metadata
         ///     </para>
         /// </summary>
         /// <returns> The primary key, or null if none is defined. </returns>
-        public virtual Key FindPrimaryKey() => _baseType?.FindPrimaryKey() ?? FindDeclaredPrimaryKey();
+        public Key FindPrimaryKey() => _baseType?.FindPrimaryKey() ?? FindDeclaredPrimaryKey();
 
-        public virtual Key FindDeclaredPrimaryKey() => _primaryKey;
+        public Key FindDeclaredPrimaryKey() => _primaryKey;
 
         /// <summary>
         ///     Sets the primary key for this entity.
         /// </summary>
         /// <param name="properties"> The properties that make up the primary key. </param>
         /// <returns> The newly created key. </returns>
-        internal virtual Key SetPrimaryKey(IReadOnlyList<Property> properties)
+        internal Key SetPrimaryKey(IReadOnlyList<Property> properties)
         {
             Check.NotEmpty(properties, nameof(properties));
             Check.HasNoNulls(properties, nameof(properties));
@@ -263,8 +263,7 @@ namespace Foundation.Metadata
             return _primaryKey;
         }
 
-        internal virtual Key SetPrimaryKey(Property property, bool runConventions = true) 
-            => SetPrimaryKey(property == null ? null : new[] { property });
+        internal Key SetPrimaryKey(Property property, bool runConventions = true) => SetPrimaryKey(property == null ? null : new[] { property });
 
         #endregion
 
@@ -312,6 +311,15 @@ namespace Foundation.Metadata
 
             Property property;
             return _properties.TryGetValue(propertyName, out property) ? property : null;
+        }
+
+        public IEnumerable<Property> FindPropertiesInHierarchy(string propertyName) => ToEnumerable(FindProperty(propertyName)).Concat(FindDerivedProperties(propertyName));
+
+        public IEnumerable<Property> FindDerivedProperties(string propertyName)
+        {
+            Check.NotNull(propertyName, nameof(propertyName));
+
+            return GetDerivedEntities().Select(et => et.FindDeclaredProperty(propertyName)).Where(p => p != null);
         }
 
         /// <summary>
@@ -406,9 +414,41 @@ namespace Foundation.Metadata
             return _navigations.TryGetValue(name, out navigation) ? navigation : null;
         }
 
+        public IEnumerable<Navigation> FindNavigationsInHierarchy(string propertyName) 
+            => ToEnumerable(FindNavigation(propertyName)).Concat(FindDerivedNavigations(propertyName));
+
+        public IEnumerable<Navigation> FindDerivedNavigations(string navigationName)
+        {
+            Check.NotNull(navigationName, nameof(navigationName));
+
+            return GetDerivedEntities().Select(et => et.FindDeclaredNavigation(navigationName)).Where(n => n != null);
+        }
+
         public IEnumerable<Navigation> GetDeclaredNavigations() => _navigations.Values;
 
         public IEnumerable<Navigation> GetNavigations() => _baseType?.GetNavigations().Concat(_navigations.Values) ?? _navigations.Values;
+
+        internal Navigation AddNavigation(PropertyInfo navigationProperty, ForeignKey fkToLinkedEntity, ForeignKey fkToTargetedEntity)
+        {
+            Check.NotNull(navigationProperty, nameof(navigationProperty));
+            Check.NotNull(fkToLinkedEntity, nameof(fkToLinkedEntity));
+            Check.NotNull(fkToTargetedEntity, nameof(fkToTargetedEntity));
+
+            var name = navigationProperty.Name;
+            var duplicateNavigation = FindNavigationsInHierarchy(name).FirstOrDefault();
+            if (duplicateNavigation != null)
+                throw new InvalidOperationException(ResX.DuplicateNavigation(name, Name, duplicateNavigation.DeclaringEntity.Name));
+
+            var duplicateProperty = FindPropertiesInHierarchy(name).FirstOrDefault();
+            if (duplicateProperty != null)
+                throw new InvalidOperationException(ResX.ConflictingProperty(name, Name, duplicateProperty.DeclaringEntity.Name));
+
+            var navigation = new Navigation(navigationProperty, fkToLinkedEntity, fkToTargetedEntity);
+
+            _navigations.Add(name, navigation);
+
+            return navigation;
+        }
 
         internal void AddManyToManyRelationship(Entity targetEntity, PropertyInfo navigationProperty)
         {
@@ -420,7 +460,9 @@ namespace Foundation.Metadata
 
             var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
 
-
+            AddNavigation(navigationProperty, 
+                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == this), 
+                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == targetEntity));
         }
 
         internal void AddManyToManyRelationship(Entity targetEntity, PropertyInfo navigationProperty, PropertyInfo inverseProperty)
@@ -452,7 +494,13 @@ namespace Foundation.Metadata
 
             var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
 
+            AddNavigation(navigationProperty,
+                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == this),
+                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == targetEntity));
 
+            targetEntity.AddNavigation(inverseProperty,
+                                       linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == targetEntity),
+                                       linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == this));
         }
 
         #endregion
@@ -519,7 +567,7 @@ namespace Foundation.Metadata
         ///     Gets the foreign keys defined on this entity.
         /// </summary>
         /// <returns> The foreign keys defined on this entity. </returns>
-        public virtual IEnumerable<ForeignKey> GetForeignKeys() => _baseType?.GetForeignKeys().Concat(_foreignKeys) ?? _foreignKeys;
+        public IEnumerable<ForeignKey> GetForeignKeys() => _baseType?.GetForeignKeys().Concat(_foreignKeys) ?? _foreignKeys;
 
         /// <summary>
         ///     Adds a new relationship to this entity.

@@ -78,7 +78,7 @@ namespace Foundation.Metadata
         /// <summary>
         ///     Gets all primary or alternate keys that use this property. Returns an empty list if none.
         /// </summary>
-        public virtual IEnumerable<Key> GetContainingKeys() => Keys ?? Enumerable.Empty<Key>();
+        public IEnumerable<Key> GetContainingKeys() => Keys ?? Enumerable.Empty<Key>();
 
         internal Property Clone(Entity targetEntity, string propertyName = null)
         {

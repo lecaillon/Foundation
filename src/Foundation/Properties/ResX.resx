@@ -126,6 +126,9 @@
   <data name="CollectionArgumentIsEmpty" xml:space="preserve">
     <value>The collection argument '{argumentName}' must contain at least one element.</value>
   </data>
+  <data name="ConflictingProperty" xml:space="preserve">
+    <value>The navigation property '{navigation}' cannot be added to the entity '{entity}' because a property with the same name already exists on entity '{duplicateEntity}'.</value>
+  </data>
   <data name="DerivedEntityKey" xml:space="preserve">
     <value>A key cannot be configured on '{derivedType}' because it is a derived type. The key must be configured on the root type '{rootType}'.</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="DuplicateKey" xml:space="preserve">
     <value>The key {key} cannot be added to the entity type '{entityType}' because a key on the same properties already exists on entity type '{duplicateEntityType}'.</value>
+  </data>
+  <data name="DuplicateNavigation" xml:space="preserve">
+    <value>The navigation property '{navigation}' cannot be added to the entity '{entity}' because a navigation property with the same name already exists on entity '{duplicateEntity}'.</value>
   </data>
   <data name="EntityBaseTypeAlreadyDefined" xml:space="preserve">
     <value>The base entity cannot be added to the entity because a base entity is already defined.</value>

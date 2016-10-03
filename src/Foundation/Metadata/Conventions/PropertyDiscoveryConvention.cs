@@ -23,7 +23,7 @@ namespace Foundation.Metadata.Conventions
             return entity;
         }
 
-        protected virtual bool IsCandidatePrimitiveProperty(PropertyInfo property, Type entityType)
+        protected bool IsCandidatePrimitiveProperty(PropertyInfo property, Type entityType)
         {
             Check.NotNull(property, nameof(property));
 

@@ -5,7 +5,6 @@ namespace Foundation.Metadata
 {
     /// <summary>
     ///     Represents a navigation property which can be used to navigate a relationship.
-    ///     http://ef.readthedocs.io/en/latest/modeling/relationships.html
     /// </summary>
     public class Navigation : PropertyBase
     {
@@ -21,7 +20,7 @@ namespace Foundation.Metadata
         /// <summary>
         ///     Gets the type that this property belongs to.
         /// </summary>
-        public override Entity DeclaringEntity { get; }
+        public override Entity DeclaringEntity => ForeignKeyToLinkedEntity.PrincipalEntity;
 
         /// <summary>
         ///     Gets the foreign key used to navigate to the linked entity.
