@@ -73,6 +73,10 @@ namespace Foundation.Tests.Metadata
 
         #endregion
 
+        //  I ---> J <---> K
+        //         |       |
+	    //         M	   L ---> M
+
         private class I
         {
             public long Id { get; set; }
