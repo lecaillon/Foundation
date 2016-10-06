@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -25,8 +26,10 @@ namespace Foundation.Metadata
         public virtual PropertyInfo PropertyInfo { get; }
 
         /// <summary>
-        ///     Gets the type that this property belongs to.
+        ///     Gets the entity that this property belongs to.
         /// </summary>
         public abstract Entity DeclaringEntity { get; }
+
+        public abstract Type ClrType { get; }
     }
 }

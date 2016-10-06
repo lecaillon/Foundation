@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -22,6 +23,8 @@ namespace Foundation.Metadata
         /// </summary>
         public override Entity DeclaringEntity => ForeignKeyToLinkedEntity.PrincipalEntity;
 
+        public override Type ClrType => PropertyInfo?.PropertyType ?? typeof(object);
+
         /// <summary>
         ///     Gets the foreign key used to navigate to the linked entity.
         /// </summary>
@@ -37,5 +40,7 @@ namespace Foundation.Metadata
         /// </summary>
         /// <returns> The target entity. </returns>
         public Entity GetTargetEntity() => ForeignKeyToTargetedEntity.PrincipalEntity;
+
+        public override string ToString() => this.ToDebugString();
     }
 }

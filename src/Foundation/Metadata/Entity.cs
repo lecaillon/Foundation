@@ -143,6 +143,8 @@ namespace Foundation.Metadata
 
         public IEnumerable<Key> GetKeys() => _baseType?.GetKeys().Concat(_keys.Values) ?? _keys.Values;
 
+        public IEnumerable<Key> GetDeclaredKeys() => _keys.Values;
+
         internal Key GetOrAddKey(IReadOnlyList<Property> properties) => FindKey(properties) ?? AddKey(properties);
 
         /// <summary>
@@ -568,6 +570,8 @@ namespace Foundation.Metadata
         /// </summary>
         /// <returns> The foreign keys defined on this entity. </returns>
         public IEnumerable<ForeignKey> GetForeignKeys() => _baseType?.GetForeignKeys().Concat(_foreignKeys) ?? _foreignKeys;
+
+        public IEnumerable<ForeignKey> GetDeclaredForeignKeys() => _foreignKeys;
 
         /// <summary>
         ///     Adds a new relationship to this entity.

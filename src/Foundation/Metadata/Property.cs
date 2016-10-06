@@ -35,7 +35,7 @@ namespace Foundation.Metadata
         /// <summary>
         ///     Gets the type of value that this property holds.
         /// </summary>
-        public Type ClrType { get; }
+        public override Type ClrType { get; }
 
         /// <summary>
         ///     Gets a value indicating whether this property can contain null.

@@ -107,5 +107,7 @@ namespace Foundation.Metadata
 
         private static bool ArePropertyTypesCompatible(IReadOnlyList<Property> principalProperties, IReadOnlyList<Property> dependentProperties)
             => principalProperties.Select(p => p.ClrType.UnwrapNullableType()).SequenceEqual(dependentProperties.Select(p => p.ClrType.UnwrapNullableType()));
+
+        public override string ToString() => this.ToDebugString();
     }
 }

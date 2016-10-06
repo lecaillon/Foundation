@@ -11,6 +11,8 @@ namespace Foundation.Tests.Metadata
 {
     public class NavigationTest
     {
+        #region Test 1
+
         private class E
         {
             public long Id { get; set; }
@@ -36,6 +38,10 @@ namespace Foundation.Tests.Metadata
             Assert.Same(typeof(E).GetProperty(nameof(E.NavToF)), annotations.Keys.ToList()[0]);
             Assert.Same(typeof(E).GetProperty(nameof(E.NavToF_2)), annotations.Keys.ToList()[1]);
         }
+
+        #endregion
+
+        #region Test 2
 
         private class G
         {
@@ -63,6 +69,28 @@ namespace Foundation.Tests.Metadata
             Assert.NotNull(annotations);
             Assert.True(annotations.Count == 1);
             Assert.Same(typeof(G).GetProperty(nameof(G.NavToH_2)), annotations.Keys.ToList()[0]);
+        }
+
+        #endregion
+
+        private class I
+        {
+            public long Id { get; set; }
+            public J NavToJ { get; set; }
+        }
+
+        private class J
+        {
+            public long Id { get; set; }
+        }
+
+        [Fact(DisplayName = "XXX")]
+        public void XXX()
+        {
+            var model = new Model(new CoreConventionSetBuilder().CreateConventionSet());
+            model.GetOrAddEntityForDebugMode(typeof(I));
+
+
         }
     }
 }

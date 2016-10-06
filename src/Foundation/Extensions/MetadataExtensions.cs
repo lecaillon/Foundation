@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 using Foundation.Metadata;
+using Foundation.Metadata.Internal;
 using Foundation.Utilities;
 
 namespace Foundation
@@ -39,50 +40,50 @@ namespace Foundation
                 builder.Append(" Abstract");
             }
 
-            //if (!singleLine)
-            //{
-            //    var properties = entity.GetDeclaredProperties().ToList();
-            //    if (properties.Count != 0)
-            //    {
-            //        builder.AppendLine().Append(indent).Append("  Properties: ");
-            //        foreach (var property in properties)
-            //        {
-            //            builder.AppendLine().Append(property.ToDebugString(false, indent + "    "));
-            //        }
-            //    }
+            if (!singleLine)
+            {
+                var properties = entity.GetDeclaredProperties().ToList();
+                if (properties.Count != 0)
+                {
+                    builder.AppendLine().Append(indent).Append("  Properties: ");
+                    foreach (var property in properties)
+                    {
+                        builder.AppendLine().Append(property.ToDebugString(false, indent + "    "));
+                    }
+                }
 
-            //    var navigations = entity.GetDeclaredNavigations().ToList();
-            //    if (navigations.Count != 0)
-            //    {
-            //        builder.AppendLine().Append(indent).Append("  Navigations: ");
-            //        foreach (var navigation in navigations)
-            //        {
-            //            builder.AppendLine().Append(navigation.ToDebugString(false, indent + "    "));
-            //        }
-            //    }
+                var navigations = entity.GetDeclaredNavigations().ToList();
+                if (navigations.Count != 0)
+                {
+                    builder.AppendLine().Append(indent).Append("  Navigations: ");
+                    foreach (var navigation in navigations)
+                    {
+                        builder.AppendLine().Append(navigation.ToDebugString(false, indent + "    "));
+                    }
+                }
 
-            //    var keys = entity.GetDeclaredKeys().ToList();
-            //    if (keys.Count != 0)
-            //    {
-            //        builder.AppendLine().Append(indent).Append("  Keys: ");
-            //        foreach (var key in keys)
-            //        {
-            //            builder.AppendLine().Append(key.ToDebugString(false, indent + "    "));
-            //        }
-            //    }
+                var keys = entity.GetDeclaredKeys().ToList();
+                if (keys.Count != 0)
+                {
+                    builder.AppendLine().Append(indent).Append("  Keys: ");
+                    foreach (var key in keys)
+                    {
+                        builder.AppendLine().Append(key.ToDebugString(false, indent + "    "));
+                    }
+                }
 
-            //    var fks = entity.GetDeclaredForeignKeys().ToList();
-            //    if (fks.Count != 0)
-            //    {
-            //        builder.AppendLine().Append(indent).Append("  Foreign keys: ");
-            //        foreach (var fk in fks)
-            //        {
-            //            builder.AppendLine().Append(fk.ToDebugString(false, indent + "    "));
-            //        }
-            //    }
+                var fks = entity.GetDeclaredForeignKeys().ToList();
+                if (fks.Count != 0)
+                {
+                    builder.AppendLine().Append(indent).Append("  Foreign keys: ");
+                    foreach (var fk in fks)
+                    {
+                        builder.AppendLine().Append(fk.ToDebugString(false, indent + "    "));
+                    }
+                }
 
-            //    builder.Append(entity.AnnotationsToDebugString(indent + "  "));
-            //}
+                builder.Append(entity.AnnotationsToDebugString(indent + "  "));
+            }
 
             return builder.ToString();
         }
@@ -126,16 +127,6 @@ namespace Foundation
             }
 
             builder.Append(property.Name).Append(" (");
-
-            //var field = property.GetField();
-            //if (field == null)
-            //{
-            //    builder.Append("no field, ");
-            //}
-            //else if (!field.EndsWith(">k__BackingField"))
-            //{
-            //    builder.Append(field).Append(", ");
-            //}
 
             builder.Append(property.ClrType.ShortDisplayName()).Append(")");
 
@@ -251,6 +242,125 @@ namespace Foundation
             //{
             //    builder.Append(key.AnnotationsToDebugString(indent + "  "));
             //}
+
+            return builder.ToString();
+        }
+
+        public static string ToDebugString(this Navigation navigation, bool singleLine = true, string indent = "")
+        {
+            var builder = new StringBuilder();
+
+            builder.Append(indent);
+
+            if (singleLine)
+            {
+                builder.Append("Navigation: ").Append(navigation.DeclaringEntity.Name).Append(".");
+            }
+
+            builder.Append(navigation.Name);
+
+            //if (navigation.GetField() == null)
+            //{
+            //    builder.Append(" (no field, ");
+            //}
+            //else
+            //{
+            //    builder.Append(" (").Append(navigation.GetField()).Append(", ");
+            //}
+
+            builder.Append(navigation.ClrType?.ShortDisplayName()).Append(")");
+
+            //if (navigation.IsCollection())
+            //{
+            //    builder.Append(" Collection");
+            //}
+
+            builder.Append(navigation.GetTargetEntity().Name);
+
+            //if (navigation.FindInverse() != null)
+            //{
+            //    builder.Append(" Inverse: " + navigation.FindInverse().Name);
+            //}
+
+            //if (navigation.GetPropertyAccessMode() != null)
+            //{
+            //    builder.Append(" PropertyAccessMode.").Append(navigation.GetPropertyAccessMode());
+            //}
+
+            //var indexes = navigation.GetPropertyIndexes();
+            //builder.Append(" ").Append(indexes.Index);
+            //builder.Append(" ").Append(indexes.OriginalValueIndex);
+            //builder.Append(" ").Append(indexes.RelationshipIndex);
+            //builder.Append(" ").Append(indexes.ShadowIndex);
+            //builder.Append(" ").Append(indexes.StoreGenerationIndex);
+
+            //if (!singleLine)
+            //{
+            //    builder.Append(navigation.AnnotationsToDebugString(indent + "  "));
+            //}
+
+            return builder.ToString();
+        }
+
+        public static string ToDebugString(this ForeignKey foreignKey, bool singleLine = true, string indent = "")
+        {
+            var builder = new StringBuilder();
+
+            builder.Append(indent);
+
+            if (singleLine)
+            {
+                builder.Append("ForeignKey: ");
+            }
+
+            builder
+                .Append(string.Join(", ", foreignKey.Properties.Select(p => singleLine ? p.DeclaringEntity.Name + "." + p.Name : p.Name)))
+                .Append(" -> ")
+                .Append(string.Join(", ", foreignKey.PrincipalKey.Properties.Select(p => p.DeclaringEntity.Name + "." + p.Name)));
+
+            if (foreignKey.IsUnique)
+            {
+                builder.Append(" Unique");
+            }
+
+            //if (foreignKey.PrincipalToDependent != null)
+            //{
+            //    builder.Append(" ToDependent: ").Append(foreignKey.PrincipalToDependent.Name);
+            //}
+
+            //if (foreignKey.DependentToPrincipal != null)
+            //{
+            //    builder.Append(" ToPrincipal: ").Append(foreignKey.DependentToPrincipal.Name);
+            //}
+
+            //if (!singleLine)
+            //{
+            //    builder.Append(foreignKey.AnnotationsToDebugString(indent + "  "));
+            //}
+
+            return builder.ToString();
+        }
+
+        public static string AnnotationsToDebugString(this Annotable annotatable, string indent = "")
+        {
+            var annotations = annotatable.GetAnnotations().ToList();
+            if (annotations.Count == 0)
+            {
+                return "";
+            }
+            var builder = new StringBuilder();
+
+            builder.AppendLine().Append(indent).Append("Annotations: ");
+            foreach (var annotation in annotations)
+            {
+                builder
+                    .AppendLine()
+                    .Append(indent)
+                    .Append("  ")
+                    .Append(annotation.Name)
+                    .Append(": ")
+                    .Append(annotation.Value);
+            }
 
             return builder.ToString();
         }
