@@ -13,7 +13,7 @@ namespace Foundation.Metadata.Conventions
         {
             Check.NotNull(entity, nameof(entity));
 
-            if (entity.BaseType == null && entity.FindPrimaryKey() == null) // TODO : virer la condition FindPrimaryKey()
+            if (entity.BaseType == null)
             {
                 var candidateProperties = entity.GetProperties().Where(p => !p.IsShadowProperty).ToList();
                 var keyProperty = DiscoverKeyProperties(entity, candidateProperties);

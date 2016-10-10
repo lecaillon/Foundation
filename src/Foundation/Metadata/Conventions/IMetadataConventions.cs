@@ -17,7 +17,7 @@
 
     public interface IPrimaryKeyConvention
     {
-        bool Apply(Key key);
+        bool Apply(Key primaryKey, Key previousPrimaryKey);
     }
 
     public interface IKeyConvention

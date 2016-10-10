@@ -136,27 +136,24 @@ namespace Foundation.Metadata
 
             var linkedEntity = AddEntity(name, runConventions: false);
 
-            var properties = new List<Property>();
-            entity1.FindPrimaryKey().Properties.Concat(entity2.FindPrimaryKey().Properties)
-                                    .ToList()
-                                    .ForEach(x =>
-                                    {
-                                        string propertyName = x.Name.Equals("Id", StringComparison.OrdinalIgnoreCase)
-                                            ? "Id" + x.DeclaringEntity.Name
-                                            : x.Name;
+            Func<Entity, List<Property>> addPropertiesToLinkedEntity = (entity) =>
+            {
+                var properties = new List<Property>();
+                entity.FindPrimaryKey().Properties.ToList().ForEach(x =>
+                {
+                    string propertyName = x.Name.Equals("Id", StringComparison.OrdinalIgnoreCase) ? "Id" + x.DeclaringEntity.Name : x.Name;
+                    properties.Add(linkedEntity.AddProperty(x.Clone(linkedEntity, propertyName)));
+                });
+                return properties;
+            };
 
-                                        properties.Add(linkedEntity.AddProperty(x.Clone(linkedEntity, propertyName)));
-                                    });
+            var propertiesFromEntity1 = addPropertiesToLinkedEntity(entity1);
+            var propertiesFromEntity2 = addPropertiesToLinkedEntity(entity2);
+            var linkedEntityProperties = propertiesFromEntity1.Concat(propertiesFromEntity2).ToList();
 
-            linkedEntity.SetPrimaryKey(properties);
-
-            linkedEntity.AddForeignKey(properties.Where(x => x.PropertyInfo?.DeclaringType == entity1.ClrType).ToList(), 
-                                       entity1.FindPrimaryKey(), 
-                                       entity1);
-
-            linkedEntity.AddForeignKey(properties.Where(x => x.PropertyInfo?.DeclaringType == entity2.ClrType || x.PropertyInfo == null).ToList(), 
-                                       entity2.FindPrimaryKey(), 
-                                       entity2);
+            linkedEntity.SetPrimaryKey(linkedEntityProperties);
+            linkedEntity.AddForeignKey(propertiesFromEntity1, entity1.FindPrimaryKey(), entity1);
+            linkedEntity.AddForeignKey(propertiesFromEntity2, entity2.FindPrimaryKey(), entity2);
 
             return linkedEntity;
         }

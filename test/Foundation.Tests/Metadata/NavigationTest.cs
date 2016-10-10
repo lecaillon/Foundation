@@ -111,13 +111,9 @@ namespace Foundation.Tests.Metadata
         {
             var model = new Model(new CoreConventionSetBuilder().CreateConventionSet());
             model.GetOrAddEntityForDebugMode(typeof(I));
-            model.GetOrAddEntityForDebugMode(typeof(L)); // TODO : ca plante : AddLinkedEntity() --> bug dans l'ajout des FK dans la détemination du nom des properties a lier
+            model.GetOrAddEntityForDebugMode(typeof(L));
 
-            // TODO : Ajouter la fonctionnalité de remplacement d'une pk par une autre (clean FK, navigation ...)
-
-            // TODO : virer la condition dans KeyDiscoveryConvention.FindPrimaryKey()
-
-            Assert.True(model.GetEntities().ToList().Count == 9, "4 entités (A,B,C,D) doivent faire partie de ce modèle.");
+            Assert.True(model.GetEntities().ToList().Count == 9, "9 entités doivent faire partie de ce modèle.");
         }
     }
 }

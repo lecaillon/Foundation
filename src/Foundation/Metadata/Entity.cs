@@ -248,6 +248,10 @@ namespace Foundation.Metadata
             if (_baseType != null)
                 throw new InvalidOperationException(ResX.DerivedEntityKey(Name, _baseType.Name));
 
+            var oldPrimaryKey = _primaryKey;
+
+            // TODO : TO BE CONTINUED
+
             Key key = GetOrAddKey(properties);
             foreach (var property in key.Properties)
             {
@@ -262,7 +266,7 @@ namespace Foundation.Metadata
                 _properties.Add(property.Name, property);
             }
 
-            Model.ConventionDispatcher.OnPrimaryKeySet(_primaryKey);
+            Model.ConventionDispatcher.OnPrimaryKeySet(_primaryKey, oldPrimaryKey);
 
             return _primaryKey;
         }

@@ -11,6 +11,8 @@
             conventionSet.EntityAddedConventions.Add(new KeyDiscoveryConvention());
             conventionSet.EntityAddedConventions.Add(new RelationshipDiscoveryConvention());
 
+            conventionSet.PrimaryKeySetConventions.Add(new KeyConvention());
+
             return conventionSet;
         }
     }

@@ -60,19 +60,19 @@ namespace Foundation.Metadata.Conventions
             return property;
         }
 
-        public Key OnPrimaryKeySet(Key key)
+        public Key OnPrimaryKeySet(Key primaryKey, Key previousPrimaryKey)
         {
-            Check.NotNull(key, nameof(key));
+            Check.NotNull(primaryKey, nameof(primaryKey));
 
             foreach (var keyConvention in _conventionSet.PrimaryKeySetConventions)
             {
-                if (!keyConvention.Apply(key))
+                if (!keyConvention.Apply(primaryKey, previousPrimaryKey))
                 {
                     break;
                 }
             }
 
-            return key;
+            return primaryKey;
         }
 
         public Key OnKeyAdded(Key key)
