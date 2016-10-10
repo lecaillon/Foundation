@@ -19,12 +19,22 @@ namespace Foundation.Metadata
             ClrType = propertyInfo.PropertyType;
         }
 
-        protected Property(string name, PropertyInfo propertyInfo, Entity declaringEntity) : base(name, propertyInfo)
+        public Property(string name, Type clrType, Entity declaringEntity) : base(name, null)
         {
+            Check.NotNull(clrType, nameof(clrType));
             Check.NotNull(declaringEntity, nameof(declaringEntity));
 
             DeclaringEntity = declaringEntity;
-            ClrType = propertyInfo.PropertyType;
+            ClrType = clrType;
+        }
+
+        private Property(string name, PropertyInfo propertyInfo, Type clrType, Entity declaringEntity) : base(name, propertyInfo)
+        {
+            Check.NotNull(declaringEntity, nameof(declaringEntity));
+            Check.NotNull(clrType, nameof(clrType));
+
+            DeclaringEntity = declaringEntity;
+            ClrType = clrType;
         }
 
         /// <summary>
@@ -85,7 +95,7 @@ namespace Foundation.Metadata
             Check.NotNull(targetEntity, nameof(targetEntity));
             Check.NullButNotEmpty(propertyName, nameof(propertyName));
 
-            return new Property(propertyName ?? Name, PropertyInfo, targetEntity)
+            return new Property(propertyName ?? Name, PropertyInfo, ClrType, targetEntity)
             {
                 PrimaryKey = null,
                 ForeignKeys  = null,

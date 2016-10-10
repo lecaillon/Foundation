@@ -73,9 +73,9 @@ namespace Foundation.Tests.Metadata
 
         #endregion
 
-        //  I ---> J <---> K
+        //  i ---> j <---> K
         //         |       |
-	    //         M	   L ---> M
+	    //         m	   l ---> m
 
         private class I
         {
@@ -86,15 +86,38 @@ namespace Foundation.Tests.Metadata
         private class J
         {
             public long Id { get; set; }
+            public M NavToM { get; set; }
+            public K NavToK { get; set; }
         }
 
-        [Fact(DisplayName = "XXX")]
-        public void XXX()
+        private class M
+        {
+            public long Id { get; set; }
+        }
+
+        private abstract class K
+        {
+            public long Id { get; set; }
+            public J NavToJ { get; set; }
+        }
+
+        private class L : K
+        {
+            public M NavToM { get; set; }
+        }
+
+        [Fact(DisplayName = "IJKLM model has 9 entities")]
+        public void IJKLM_model_has_9_entities()
         {
             var model = new Model(new CoreConventionSetBuilder().CreateConventionSet());
             model.GetOrAddEntityForDebugMode(typeof(I));
+            model.GetOrAddEntityForDebugMode(typeof(L)); // TODO : ca plante : AddLinkedEntity() --> bug dans l'ajout des FK dans la détemination du nom des properties a lier
 
+            // TODO : Ajouter la fonctionnalité de remplacement d'une pk par une autre (clean FK, navigation ...)
 
+            // TODO : virer la condition dans KeyDiscoveryConvention.FindPrimaryKey()
+
+            Assert.True(model.GetEntities().ToList().Count == 9, "4 entités (A,B,C,D) doivent faire partie de ce modèle.");
         }
     }
 }

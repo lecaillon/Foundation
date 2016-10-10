@@ -12,7 +12,6 @@ namespace Foundation.Metadata
         protected PropertyBase(string name, PropertyInfo propertyInfo)
         {
             Check.NotEmpty(name, nameof(name));
-            Check.NotNull(propertyInfo, nameof(propertyInfo));
 
             Name = name;
             PropertyInfo = propertyInfo;

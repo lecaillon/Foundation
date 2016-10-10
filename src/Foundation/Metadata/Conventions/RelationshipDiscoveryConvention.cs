@@ -8,41 +8,45 @@ namespace Foundation.Metadata.Conventions
 {
     public class RelationshipDiscoveryConvention : IEntityConvention
     {
+        public const string NAVIGATION_CANDIDATES_ANNOTATION_NAME = "RelationshipDiscoveryConvention:NavigationCandidates";
         public const string AMBIGUOUS_NAVIGATIONS_ANNOTATION_NAME = "RelationshipDiscoveryConvention:AmbiguousNavigations";
 
         public Entity Apply(Entity entity)
         {
             if (entity.IsShadowEntity) return entity;
 
-            var model = entity.Model;
-            var discoveredEntities = new List<Entity>();
-            var unvisitedEntities = new Stack<Entity>();
-            unvisitedEntities.Push(entity);
-
-            while (unvisitedEntities.Count > 0)
+            if (entity.FindAnnotation(NAVIGATION_CANDIDATES_ANNOTATION_NAME) == null)
             {
-                var nextEntity = unvisitedEntities.Pop();
-                discoveredEntities.Add(nextEntity);
-                var navigationCandidates = GetNavigationCandidates(nextEntity).Reverse();
-                foreach (var candidateTuple in navigationCandidates)
-                {
-                    var targetClrType = candidateTuple.Value;
-                    if (model.FindEntity(targetClrType) != null /* || nextEntity.IsIgnored(candidateTuple.Key.Name, ConfigurationSource.Convention) */ )
-                    {
-                        continue;
-                    }
+                var model = entity.Model;
+                var discoveredEntities = new List<Entity>();
+                var unvisitedEntities = new Stack<Entity>();
+                unvisitedEntities.Push(entity);
 
-                    var candidateTargetEntity = model.AddEntity(targetClrType, runConventions: false);
-                    if (candidateTargetEntity != null)
+                while (unvisitedEntities.Count > 0)
+                {
+                    var nextEntity = unvisitedEntities.Pop();
+                    discoveredEntities.Add(nextEntity);
+                    var navigationCandidates = GetNavigationCandidates(nextEntity).Reverse();
+                    foreach (var candidateTuple in navigationCandidates)
                     {
-                        unvisitedEntities.Push(candidateTargetEntity);
+                        var targetClrType = candidateTuple.Value;
+                        if (model.FindEntity(targetClrType) != null /* || nextEntity.IsIgnored(candidateTuple.Key.Name, ConfigurationSource.Convention) */ )
+                        {
+                            continue;
+                        }
+
+                        var candidateTargetEntity = model.AddEntity(targetClrType, runConventions: false);
+                        if (candidateTargetEntity != null)
+                        {
+                            unvisitedEntities.Push(candidateTargetEntity);
+                        }
                     }
                 }
-            }
 
-            for (var i = 1; i < discoveredEntities.Count; i++)
-            {
-                model.ConventionDispatcher.OnEntityAdded(discoveredEntities[i]);
+                for (var i = 1; i < discoveredEntities.Count; i++)
+                {
+                    model.ConventionDispatcher.OnEntityAdded(discoveredEntities[i]);
+                }
             }
 
             return DiscoverRelationships(entity);
@@ -239,19 +243,27 @@ namespace Foundation.Metadata.Conventions
 
         private SortedDictionary<PropertyInfo, Type> GetNavigationCandidates(Entity entity)
         {
-            // tester si annotation existe pas déjà ... peut être ...
-            var navigationCandidates = new SortedDictionary<PropertyInfo, Type>(PropertyInfoNameComparer.Instance);
-            foreach (var propertyInfo in entity.ClrType.GetRuntimeProperties().OrderBy(p => p.Name))
+            var navigationCandidates = entity.FindAnnotation(NAVIGATION_CANDIDATES_ANNOTATION_NAME)?.Value as SortedDictionary<PropertyInfo, Type>;
+            if (navigationCandidates == null)
             {
-                var targetType = propertyInfo.FindCandidateNavigationPropertyType();
-                if (targetType != null)
+                navigationCandidates = new SortedDictionary<PropertyInfo, Type>(PropertyInfoNameComparer.Instance);
+                foreach (var propertyInfo in entity.ClrType.GetRuntimeProperties().OrderBy(p => p.Name))
                 {
-                    navigationCandidates[propertyInfo] = targetType;
+                    var targetType = propertyInfo.FindCandidateNavigationPropertyType();
+                    if (targetType != null)
+                    {
+                        navigationCandidates[propertyInfo] = targetType;
+                    }
                 }
+
+                SetNavigationCandidates(entity, navigationCandidates);
             }
 
             return navigationCandidates;
         }
+
+        private void SetNavigationCandidates(Entity entity, SortedDictionary<PropertyInfo, Type> navigationCandidates) 
+            => entity.SetAnnotation(NAVIGATION_CANDIDATES_ANNOTATION_NAME, navigationCandidates);
 
         private SortedDictionary<PropertyInfo, Type> GetAmbigousNavigations(Entity entity) => entity.FindAnnotation(AMBIGUOUS_NAVIGATIONS_ANNOTATION_NAME)?.Value as SortedDictionary<PropertyInfo, Type>;
 

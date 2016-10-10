@@ -233,6 +233,8 @@ namespace Foundation.Metadata
 
         public Key FindDeclaredPrimaryKey() => _primaryKey;
 
+        internal Key SetPrimaryKey(Property property, bool runConventions = true) => SetPrimaryKey(property == null ? null : new[] { property });
+
         /// <summary>
         ///     Sets the primary key for this entity.
         /// </summary>
@@ -265,7 +267,18 @@ namespace Foundation.Metadata
             return _primaryKey;
         }
 
-        internal Key SetPrimaryKey(Property property, bool runConventions = true) => SetPrimaryKey(property == null ? null : new[] { property });
+        internal Key SetTempPrimaryKey()
+        {
+            if (_primaryKey != null) throw new NotSupportedException(ResX.PrimaryKeyAlreadyExists);
+
+            IReadOnlyList<Property> properties = new[] { new Property("TempId_" + Name, typeof(int), this) };
+            Key key = new Key(properties);
+
+            _keys.Add(properties, key);
+            _primaryKey = key;
+
+            return _primaryKey;
+        }
 
         #endregion
 
@@ -460,11 +473,7 @@ namespace Foundation.Metadata
             string associationTableName = navigationProperty.GetCustomAttribute<RelationshipAttribute>()?.AssociationTableName ??
                                           $"{Name}_{targetEntity.Name}";
 
-            var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
-
-            AddNavigation(navigationProperty, 
-                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == this), 
-                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == targetEntity));
+            AddManyToManyRelationship(associationTableName, this, targetEntity, navigationProperty);
         }
 
         internal void AddManyToManyRelationship(Entity targetEntity, PropertyInfo navigationProperty, PropertyInfo inverseProperty)
@@ -494,15 +503,32 @@ namespace Foundation.Metadata
                     : inverseAssociationTableName;
             }
 
-            var linkedEntity = Model.AddLinkedEntity(associationTableName, this, targetEntity);
+            AddManyToManyRelationship(associationTableName, this, targetEntity, navigationProperty);
 
-            AddNavigation(navigationProperty,
-                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == this),
-                          linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == targetEntity));
+            var linkedEntity = Model.FindEntity(associationTableName);
 
             targetEntity.AddNavigation(inverseProperty,
                                        linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == targetEntity),
                                        linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == this));
+        }
+
+        private Navigation AddManyToManyRelationship(string associationTableName, Entity entity1, Entity entity2, PropertyInfo navigationProperty)
+        {
+            Check.NotEmpty(associationTableName, nameof(associationTableName));
+            Check.NotNull(entity1, nameof(entity1));
+            Check.NotNull(entity2, nameof(entity2));
+            Check.NotNull(navigationProperty, nameof(navigationProperty));
+
+            if (entity2.FindPrimaryKey() == null)
+            {
+                entity2.SetTempPrimaryKey();
+            }
+
+            var linkedEntity = Model.AddLinkedEntity(associationTableName, entity1, entity2);
+
+            return AddNavigation(navigationProperty,
+                                 linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == this),
+                                 linkedEntity.GetForeignKeys().Single(x => x.PrincipalEntity == entity2));
         }
 
         #endregion

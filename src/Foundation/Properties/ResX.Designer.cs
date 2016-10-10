@@ -183,6 +183,14 @@ namespace Foundation
             return string.Format(CultureInfo.CurrentCulture, GetString("NullableKey", "entityType", "property"), entityType, property);
         }
 
+        /// <summary>
+        /// A temporary primary key cannot be added because a primary key is already defined.
+        /// </summary>
+        public static string PrimaryKeyAlreadyExists
+        {
+            get { return GetString("PrimaryKeyAlreadyExists"); }
+        }
+
         private static string GetString(string name, params string[] formatterNames)
         {
             var value = _resourceManager.GetString(name);

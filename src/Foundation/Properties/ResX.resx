@@ -180,4 +180,7 @@
   <data name="NullableKey" xml:space="preserve">
     <value>A key on entity type '{entityType}' cannot contain the property '{property}' because it is nullable/optional. All properties on which a key is declared must be marked as non-nullable/required.</value>
   </data>
+  <data name="PrimaryKeyAlreadyExists" xml:space="preserve">
+    <value>A temporary primary key cannot be added because a primary key is already defined.</value>
+  </data>
 </root>

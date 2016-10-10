@@ -21,10 +21,7 @@ namespace Foundation.Metadata.Internal
         /// <summary>
         ///     Gets all annotations on the current object.
         /// </summary>
-        public virtual IEnumerable<Annotation> GetAnnotations() =>
-            _annotations.HasValue
-                ? _annotations.Value.Values
-                : Enumerable.Empty<Annotation>();
+        public virtual IEnumerable<Annotation> GetAnnotations() => _annotations.HasValue ? _annotations.Value.Values : Enumerable.Empty<Annotation>();
 
         /// <summary>
         ///     Adds an annotation to this object. Throws if an annotation with the specified name already exists.
@@ -48,7 +45,7 @@ namespace Foundation.Metadata.Internal
         /// <param name="name"> The key of the annotation to be added. </param>
         /// <param name="annotation"> The annotation to be added. </param>
         /// <returns> The added annotation. </returns>
-        protected virtual Annotation AddAnnotation(string name, Annotation annotation)
+        public virtual Annotation AddAnnotation(string name, Annotation annotation)
         {
             var previousLength = _annotations.Value.Count;
             SetAnnotation(name, annotation);
@@ -66,9 +63,26 @@ namespace Foundation.Metadata.Internal
         ///     annotation with the specified name already exists. 
         /// </summary>
         /// <param name="name"> The key of the annotation to be added. </param>
+        /// <param name="value"> The value to be stored in the annotation. </param>
+        /// <returns> The annotation that was set. </returns>
+        public virtual Annotation SetAnnotation(string name, object value)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotNull(value, nameof(value));
+
+            var annotation = CreateAnnotation(name, value);
+
+            return SetAnnotation(name, annotation);
+        }
+
+        /// <summary>
+        ///     Sets the annotation stored under the given key. Overwrites the existing annotation if an 
+        ///     annotation with the specified name already exists. 
+        /// </summary>
+        /// <param name="name"> The key of the annotation to be added. </param>
         /// <param name="annotation"> The annotation to be set. </param>
         /// <returns> The annotation that was set. </returns>
-        protected virtual Annotation SetAnnotation(string name, Annotation annotation)
+        public virtual Annotation SetAnnotation(string name, Annotation annotation)
         {
             _annotations.Value[name] = annotation;
 

@@ -144,13 +144,19 @@ namespace Foundation.Metadata
                                         string propertyName = x.Name.Equals("Id", StringComparison.OrdinalIgnoreCase)
                                             ? "Id" + x.DeclaringEntity.Name
                                             : x.Name;
-                                                
-                                        linkedEntity.AddProperty(x.Clone(linkedEntity, propertyName));
+
+                                        properties.Add(linkedEntity.AddProperty(x.Clone(linkedEntity, propertyName)));
                                     });
 
-            linkedEntity.SetPrimaryKey(linkedEntity.GetDeclaredProperties().ToList());
-            linkedEntity.AddForeignKey(linkedEntity.GetDeclaredProperties().Where(x => x.PropertyInfo.DeclaringType == entity1.ClrType).ToList(), entity1.FindPrimaryKey(), entity1);
-            linkedEntity.AddForeignKey(linkedEntity.GetDeclaredProperties().Where(x => x.PropertyInfo.DeclaringType == entity2.ClrType).ToList(), entity2.FindPrimaryKey(), entity2);
+            linkedEntity.SetPrimaryKey(properties);
+
+            linkedEntity.AddForeignKey(properties.Where(x => x.PropertyInfo?.DeclaringType == entity1.ClrType).ToList(), 
+                                       entity1.FindPrimaryKey(), 
+                                       entity1);
+
+            linkedEntity.AddForeignKey(properties.Where(x => x.PropertyInfo?.DeclaringType == entity2.ClrType || x.PropertyInfo == null).ToList(), 
+                                       entity2.FindPrimaryKey(), 
+                                       entity2);
 
             return linkedEntity;
         }
