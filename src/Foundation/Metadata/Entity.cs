@@ -248,9 +248,8 @@ namespace Foundation.Metadata
             if (_baseType != null)
                 throw new InvalidOperationException(ResX.DerivedEntityKey(Name, _baseType.Name));
 
-            var oldPrimaryKey = _primaryKey;
-
-            // TODO : TO BE CONTINUED
+            if (_primaryKey != null)
+                throw new InvalidOperationException(ResX.PrimaryKeyAlreadyExists);
 
             Key key = GetOrAddKey(properties);
             foreach (var property in key.Properties)
@@ -265,21 +264,6 @@ namespace Foundation.Metadata
             {
                 _properties.Add(property.Name, property);
             }
-
-            Model.ConventionDispatcher.OnPrimaryKeySet(_primaryKey, oldPrimaryKey);
-
-            return _primaryKey;
-        }
-
-        internal Key SetTempPrimaryKey()
-        {
-            if (_primaryKey != null) throw new NotSupportedException(ResX.PrimaryKeyAlreadyExists);
-
-            IReadOnlyList<Property> properties = new[] { new Property("TempId_" + Name, typeof(int), this) };
-            Key key = new Key(properties);
-
-            _keys.Add(properties, key);
-            _primaryKey = key;
 
             return _primaryKey;
         }
@@ -522,11 +506,6 @@ namespace Foundation.Metadata
             Check.NotNull(entity1, nameof(entity1));
             Check.NotNull(entity2, nameof(entity2));
             Check.NotNull(navigationProperty, nameof(navigationProperty));
-
-            if (entity2.FindPrimaryKey() == null)
-            {
-                entity2.SetTempPrimaryKey();
-            }
 
             var linkedEntity = Model.AddLinkedEntity(associationTableName, entity1, entity2);
 

@@ -6,12 +6,13 @@
         {
             var conventionSet = new ConventionSet();
 
-            conventionSet.EntityAddedConventions.Add(new BaseTypeDiscoveryConvention());
-            conventionSet.EntityAddedConventions.Add(new PropertyDiscoveryConvention());
-            conventionSet.EntityAddedConventions.Add(new KeyDiscoveryConvention());
-            conventionSet.EntityAddedConventions.Add(new RelationshipDiscoveryConvention());
+            conventionSet.EntityAddedStrictConventions.Add(new PropertyDiscoveryConvention());
+            conventionSet.EntityAddedStrictConventions.Add(new KeyDiscoveryConvention());
 
-            conventionSet.PrimaryKeySetConventions.Add(new KeyConvention());
+            conventionSet.EntityAddedFullConventions.Add(new BaseTypeDiscoveryConvention());
+            conventionSet.EntityAddedFullConventions.Add(new PropertyDiscoveryConvention());
+            conventionSet.EntityAddedFullConventions.Add(new KeyDiscoveryConvention());
+            conventionSet.EntityAddedFullConventions.Add(new RelationshipDiscoveryConvention());
 
             return conventionSet;
         }

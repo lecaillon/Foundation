@@ -13,11 +13,27 @@ namespace Foundation.Metadata.Conventions
             _conventionSet = conventionSet;
         }
 
+        public Entity OnEntityAddedStrict(Entity entity)
+        {
+            Check.NotNull(entity, nameof(entity));
+
+            foreach (var entityTypeConvention in _conventionSet.EntityAddedStrictConventions)
+            {
+                entity = entityTypeConvention.Apply(entity);
+                if (entity == null)
+                {
+                    break;
+                }
+            }
+
+            return entity;
+        }
+
         public Entity OnEntityAdded(Entity entity)
         {
             Check.NotNull(entity, nameof(entity));
 
-            foreach (var entityTypeConvention in _conventionSet.EntityAddedConventions)
+            foreach (var entityTypeConvention in _conventionSet.EntityAddedFullConventions)
             {
                 entity = entityTypeConvention.Apply(entity);
                 if (entity == null)
@@ -58,21 +74,6 @@ namespace Foundation.Metadata.Conventions
             }
 
             return property;
-        }
-
-        public Key OnPrimaryKeySet(Key primaryKey, Key previousPrimaryKey)
-        {
-            Check.NotNull(primaryKey, nameof(primaryKey));
-
-            foreach (var keyConvention in _conventionSet.PrimaryKeySetConventions)
-            {
-                if (!keyConvention.Apply(primaryKey, previousPrimaryKey))
-                {
-                    break;
-                }
-            }
-
-            return primaryKey;
         }
 
         public Key OnKeyAdded(Key key)

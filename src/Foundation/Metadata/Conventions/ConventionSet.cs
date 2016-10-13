@@ -8,9 +8,14 @@ namespace Foundation.Metadata.Conventions
     public class ConventionSet
     {
         /// <summary>
+        ///     Minimal conventions to run when an entity type is added to the model.
+        /// </summary>
+        public virtual IList<IEntityConvention> EntityAddedStrictConventions { get; } = new List<IEntityConvention>();
+
+        /// <summary>
         ///     Conventions to run when an entity type is added to the model.
         /// </summary>
-        public virtual IList<IEntityConvention> EntityAddedConventions { get; } = new List<IEntityConvention>();
+        public virtual IList<IEntityConvention> EntityAddedFullConventions { get; } = new List<IEntityConvention>();
 
         /// <summary>
         ///     Conventions to run when a base entity type is configured for an inheritance hierarchy.
@@ -21,11 +26,6 @@ namespace Foundation.Metadata.Conventions
         ///     Conventions to run when a property is added.
         /// </summary>
         public virtual IList<IPropertyConvention> PropertyAddedConventions { get; } = new List<IPropertyConvention>();
-
-        /// <summary>
-        ///     Conventions to run when a primary key is configured.
-        /// </summary>
-        public virtual IList<IPrimaryKeyConvention> PrimaryKeySetConventions { get; } = new List<IPrimaryKeyConvention>();
 
         /// <summary>
         ///     Conventions to run when a key is added.

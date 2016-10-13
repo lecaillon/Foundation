@@ -19,15 +19,6 @@ namespace Foundation.Metadata
             ClrType = propertyInfo.PropertyType;
         }
 
-        public Property(string name, Type clrType, Entity declaringEntity) : base(name, null)
-        {
-            Check.NotNull(clrType, nameof(clrType));
-            Check.NotNull(declaringEntity, nameof(declaringEntity));
-
-            DeclaringEntity = declaringEntity;
-            ClrType = clrType;
-        }
-
         private Property(string name, PropertyInfo propertyInfo, Type clrType, Entity declaringEntity) : base(name, propertyInfo)
         {
             Check.NotNull(declaringEntity, nameof(declaringEntity));

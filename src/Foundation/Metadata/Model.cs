@@ -111,6 +111,18 @@ namespace Foundation.Metadata
             return AddEntity(entity, runConventions);
         }
 
+        private Entity AddEntity(Entity entity, bool runConventions = true)
+        {
+            _entities[entity.Name] = entity;
+
+            if (runConventions)
+                ConventionDispatcher.OnEntityAdded(entity);
+            else
+                ConventionDispatcher.OnEntityAddedStrict(entity);
+
+            return entity;
+        }
+
         /// <summary>
         ///     <para>
         ///         Add a shadow entity to this model used to represent a many to many association between two entities.
@@ -156,16 +168,6 @@ namespace Foundation.Metadata
             linkedEntity.AddForeignKey(propertiesFromEntity2, entity2.FindPrimaryKey(), entity2);
 
             return linkedEntity;
-        }
-
-        private Entity AddEntity(Entity entity, bool runConventions = true)
-        {
-            _entities[entity.Name] = entity;
-
-            if (runConventions)
-                ConventionDispatcher.OnEntityAdded(entity);
-
-            return entity;
         }
 
         public override string ToString() => this.ToDebugString();
