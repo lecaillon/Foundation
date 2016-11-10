@@ -29,7 +29,8 @@ namespace Foundation.Migrations.Builders
             builder.PrimaryKey("", entity.FindDeclaredPrimaryKey());
 
             Operations.Add(createTableOperation);
-            throw new NotImplementedException();
+
+            return builder;
         }
 
         protected virtual OperationBuilder<AlterTableOperation> AlterTable(string name, string schema = null)
