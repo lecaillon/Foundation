@@ -160,6 +160,14 @@ namespace Foundation
         }
 
         /// <summary>
+        /// The specified key {key} must be primary.
+        /// </summary>
+        public static string KeyNotPrimary(object key)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("KeyNotPrimary", "key"), key);
+        }
+
+        /// <summary>
         /// The specified key properties {key} are not declared on the entity type '{entityType}'. Ensure key properties are declared on the target entity type.
         /// </summary>
         public static string KeyPropertiesWrongEntity(object key, object entityType)

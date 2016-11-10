@@ -171,6 +171,9 @@
   <data name="IncoherentAssociationTableNames" xml:space="preserve">
     <value>Navigation and inverse properties must define the same association table name.</value>
   </data>
+  <data name="KeyNotPrimary" xml:space="preserve">
+    <value>The specified key {key} must be primary.</value>
+  </data>
   <data name="KeyPropertiesWrongEntity" xml:space="preserve">
     <value>The specified key properties {key} are not declared on the entity type '{entityType}'. Ensure key properties are declared on the target entity type.</value>
   </data>
