@@ -4,6 +4,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "System.ComponentModel.Annotations": "4.1.0",
     "System.Data.Common": "4.1.0"
   },
 

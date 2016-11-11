@@ -1,7 +1,7 @@
 ﻿using System;
 using Foundation.Utilities;
 
-namespace Foundation.Metadata.DataAnnotations
+namespace Foundation.Metadata.Annotations
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class RelationshipAttribute : Attribute

@@ -1,10 +1,9 @@
 ﻿using System.Linq;
 using System.Text;
-using Foundation.Metadata;
-using Foundation.Metadata.Internal;
+using Foundation.Metadata.Annotations;
 using Foundation.Utilities;
 
-namespace Foundation
+namespace Foundation.Metadata
 {
     public static class MetadataExtensions
     {
@@ -111,6 +110,20 @@ namespace Foundation
                 baseType = baseType.BaseType;
             }
             return false;
+        }
+
+        /// <summary>
+        ///     Gets the root base type for a given entity.
+        /// </summary>
+        /// <param name="entity"> The type to find the root of. </param>
+        /// <returns>
+        ///     The root base type. If the given entity is not a derived type, then the same entity is returned.
+        /// </returns>
+        public static Entity Root(this Entity entity)
+        {
+            Check.NotNull(entity, nameof(entity));
+
+            return entity.BaseType?.Root() ?? entity;
         }
 
         #endregion

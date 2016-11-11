@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Foundation.Metadata;
 using Foundation.Metadata.Conventions;
-using Foundation.Metadata.DataAnnotations;
+using Foundation.Metadata.Annotations;
 using Xunit;
 
 namespace Foundation.Tests.Metadata

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Foundation.Migrations.Operations;
+﻿using Foundation.Migrations.Operations;
 using Foundation.Utilities;
 
 namespace Foundation.Migrations.Builders

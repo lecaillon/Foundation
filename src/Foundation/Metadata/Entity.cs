@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Foundation.Metadata.DataAnnotations;
+using Foundation.Metadata.Annotations;
 using Foundation.Metadata.Internal;
 using Foundation.Utilities;
 

@@ -1,4 +1,4 @@
-﻿using Foundation.Metadata.Internal;
+﻿using Foundation.Metadata.Annotations;
 
 namespace Foundation.Migrations.Operations
 {

@@ -1,6 +1,6 @@
 ﻿using Foundation.Utilities;
 
-namespace Foundation.Metadata.Internal
+namespace Foundation.Metadata.Annotations
 {
     /// <summary>
     ///     <para>
