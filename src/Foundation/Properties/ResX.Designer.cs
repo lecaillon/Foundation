@@ -40,6 +40,14 @@ namespace Foundation
         }
 
         /// <summary>
+        /// {conflictingConfiguration} cannot be set for '{property}', because {existingConfiguration} is already set.
+        /// </summary>
+        public static string ConflictingColumnServerGeneration(object conflictingConfiguration, object property, object existingConfiguration)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ConflictingColumnServerGeneration", "conflictingConfiguration", "property", "existingConfiguration"), conflictingConfiguration, property, existingConfiguration);
+        }
+
+        /// <summary>
         /// The navigation property '{navigation}' cannot be added to the entity '{entity}' because a property with the same name already exists on entity '{duplicateEntity}'.
         /// </summary>
         public static string ConflictingProperty(object navigation, object entity, object duplicateEntity)
@@ -157,6 +165,14 @@ namespace Foundation
         public static string IncoherentAssociationTableNames
         {
             get { return GetString("IncoherentAssociationTableNames"); }
+        }
+
+        /// <summary>
+        /// Cannot set default value '{value}' of type '{valueType}' on property '{property}' of type '{propertyType}' in entity '{entity}'.
+        /// </summary>
+        public static string IncorrectDefaultValueType(object value, object valueType, object property, object propertyType, object entity)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("IncorrectDefaultValueType", "value", "valueType", "property", "propertyType", "entity"), value, valueType, property, propertyType, entity);
         }
 
         /// <summary>

@@ -15,13 +15,13 @@ namespace Foundation.Metadata.Annotations
 
         protected virtual Annotable Metadata => Model;
 
-        public string DatabaseName
+        public virtual string DatabaseName
         {
             get { return (string)Metadata[RelationalAnnotationNames.DatabaseName]; }
             set { Metadata[RelationalAnnotationNames.DatabaseName] = Check.NullButNotEmpty(value, nameof(value)); }
         }
 
-        public string DefaultSchema
+        public virtual string DefaultSchema
         {
             get { return (string)Metadata[RelationalAnnotationNames.DefaultSchema]; }
             set { Metadata[RelationalAnnotationNames.DefaultSchema] = Check.NullButNotEmpty(value, nameof(value)); }

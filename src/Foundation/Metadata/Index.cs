@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Foundation.Metadata.Annotations;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -6,7 +7,7 @@ namespace Foundation.Metadata
     /// <summary>
     ///     Represents an index on a set of properties.
     /// </summary>
-    public class Index
+    public class Index : Annotable
     {
         public Index(IReadOnlyList<Property> properties, Entity declaringEntity)
         {
@@ -21,7 +22,7 @@ namespace Foundation.Metadata
         /// <summary>
         ///     Gets the properties that this index is defined on.
         /// </summary>
-        IEnumerable<Property> Properties { get; }
+        public IEnumerable<Property> Properties { get; }
 
         /// <summary>
         ///     Gets the entity type the index is defined on. This may be different from the type that <see cref="Properties" />

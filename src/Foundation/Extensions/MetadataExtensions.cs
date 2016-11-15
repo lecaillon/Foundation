@@ -233,6 +233,8 @@ namespace Foundation.Metadata
             return builder.ToString();
         }
 
+        #region Key
+
         public static string ToDebugString(this Key key, bool singleLine = true, string indent = "")
         {
             var builder = new StringBuilder();
@@ -258,6 +260,10 @@ namespace Foundation.Metadata
 
             return builder.ToString();
         }
+
+        public static bool IsPrimaryKey(this Key key) => key == key.DeclaringEntity.FindPrimaryKey();
+
+        #endregion
 
         public static string ToDebugString(this Navigation navigation, bool singleLine = true, string indent = "")
         {

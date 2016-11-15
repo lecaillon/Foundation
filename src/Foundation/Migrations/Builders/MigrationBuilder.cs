@@ -23,7 +23,10 @@ namespace Foundation.Migrations.Builders
         {
             Check.NotNull(entity, nameof(entity));
 
+            var pk = entity.FindDeclaredPrimaryKey();
+
             var entityAnnotaionProvider = AnnotationProvider.For(entity);
+            var pkAnnotaionProvider = AnnotationProvider.For(pk);
 
             string schema = entityAnnotaionProvider.Schema;
             string name = entityAnnotaionProvider.TableName;
@@ -35,7 +38,7 @@ namespace Foundation.Migrations.Builders
             };
 
             var builder = new CreateTableBuilder(createTableOperation);
-            builder.PrimaryKey("", entity.FindDeclaredPrimaryKey());
+            builder.PrimaryKey(pkAnnotaionProvider.Name, entity.FindDeclaredPrimaryKey());
 
             Operations.Add(createTableOperation);
 

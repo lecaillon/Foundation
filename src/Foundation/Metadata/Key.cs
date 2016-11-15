@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Foundation.Metadata.Annotations;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -7,7 +8,7 @@ namespace Foundation.Metadata
     /// <summary>
     ///     Represents a primary or alternate key on an entity.
     /// </summary>
-    public class Key
+    public class Key : Annotable
     {
         public Key(IReadOnlyList<Property> properties)
         {

@@ -126,6 +126,9 @@
   <data name="CollectionArgumentIsEmpty" xml:space="preserve">
     <value>The collection argument '{argumentName}' must contain at least one element.</value>
   </data>
+  <data name="ConflictingColumnServerGeneration" xml:space="preserve">
+    <value>{conflictingConfiguration} cannot be set for '{property}', because {existingConfiguration} is already set.</value>
+  </data>
   <data name="ConflictingProperty" xml:space="preserve">
     <value>The navigation property '{navigation}' cannot be added to the entity '{entity}' because a property with the same name already exists on entity '{duplicateEntity}'.</value>
   </data>
@@ -170,6 +173,9 @@
   </data>
   <data name="IncoherentAssociationTableNames" xml:space="preserve">
     <value>Navigation and inverse properties must define the same association table name.</value>
+  </data>
+  <data name="IncorrectDefaultValueType" xml:space="preserve">
+    <value>Cannot set default value '{value}' of type '{valueType}' on property '{property}' of type '{propertyType}' in entity '{entity}'.</value>
   </data>
   <data name="KeyNotPrimary" xml:space="preserve">
     <value>The specified key {key} must be primary.</value>

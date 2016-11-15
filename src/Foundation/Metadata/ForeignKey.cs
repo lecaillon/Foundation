@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Foundation.Metadata.Annotations;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -9,7 +10,7 @@ namespace Foundation.Metadata
     ///     Represents a relationship where a foreign key property(s) in a dependent entity type
     ///     reference a corresponding primary or alternate key in a principal entity type.
     /// </summary>
-    public class ForeignKey
+    public class ForeignKey : Annotable
     {
         public ForeignKey(IReadOnlyList<Property> dependentProperties, Key principalKey, Entity dependentEntity, Entity principalEntity)
         {

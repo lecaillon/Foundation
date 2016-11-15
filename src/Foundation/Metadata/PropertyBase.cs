@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Foundation.Metadata.Annotations;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -7,7 +8,7 @@ namespace Foundation.Metadata
     /// <summary>
     ///     Base type for navigation and scalar properties.
     /// </summary>
-    public abstract class PropertyBase
+    public abstract class PropertyBase : Annotable
     {
         protected PropertyBase(string name, PropertyInfo propertyInfo)
         {

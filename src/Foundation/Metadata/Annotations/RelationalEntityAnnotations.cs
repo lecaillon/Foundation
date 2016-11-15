@@ -21,14 +21,14 @@ namespace Foundation.Metadata.Annotations
             set { Metadata[RelationalAnnotationNames.TableName] = Check.NullButNotEmpty(value, nameof(value)); }
         }
 
-        public string Schema
+        public virtual string Schema
         {
             get { return (string)Metadata[RelationalAnnotationNames.Schema] ?? new RelationalModelAnnotations(Entity.Model).DefaultSchema; }
             set { Metadata[RelationalAnnotationNames.Schema] = Check.NullButNotEmpty(value, nameof(value)); }
         }
 
-        public Property DiscriminatorProperty { get; set; }
+        public virtual Property DiscriminatorProperty { get; set; }
 
-        public object DiscriminatorValue { get; set; }
+        public virtual object DiscriminatorValue { get; set; }
     }
 }
