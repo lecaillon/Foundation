@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Foundation.Metadata;
+using Foundation.Metadata.Annotations;
 using Foundation.Migrations.Operations;
 using Foundation.Utilities;
 
@@ -7,14 +8,25 @@ namespace Foundation.Migrations.Builders
 {
     public class MigrationBuilder
     {
+        public MigrationBuilder(IRelationalAnnotationProvider annotationProvider)
+        {
+            Check.NotNull(annotationProvider, nameof(annotationProvider));
+
+            AnnotationProvider = annotationProvider;
+        }
+
+        public virtual IRelationalAnnotationProvider AnnotationProvider { get; }
+
         public virtual List<MigrationOperation> Operations { get; } = new List<MigrationOperation>();
 
         protected virtual CreateTableBuilder CreateTable(Entity entity)
         {
             Check.NotNull(entity, nameof(entity));
 
-            string schema = string.Empty;
-            string name = string.Empty;
+            var entityAnnotaionProvider = AnnotationProvider.For(entity);
+
+            string schema = entityAnnotaionProvider.Schema;
+            string name = entityAnnotaionProvider.TableName;
 
             var createTableOperation = new CreateTableOperation
             {

@@ -8,7 +8,7 @@ namespace Foundation.Metadata.Conventions
         {
             if (!string.IsNullOrWhiteSpace(attribute.Schema))
             {
-                //entity.Relational().ToTable(attribute.Name, attribute.Schema);
+                entity.Relational().Schema = attribute.Schema;
             }
 
             if (!string.IsNullOrWhiteSpace(attribute.Name))

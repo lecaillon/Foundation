@@ -1,20 +1,17 @@
-﻿using System;
-using Foundation.Utilities;
+﻿using Foundation.Utilities;
 
 namespace Foundation.Metadata.Annotations
 {
     public class RelationalEntityAnnotations : IRelationalEntityAnnotations
     {
-        private Entity _entity;
-
         public RelationalEntityAnnotations(Entity entity)
         {
             Check.NotNull(entity, nameof(entity));
 
-            _entity = entity;
+            Entity = entity;
         }
 
-        protected virtual Entity Entity => _entity;
+        protected virtual Entity Entity { get; }
 
         protected virtual Annotable Metadata => Entity.Root();
 
@@ -26,34 +23,12 @@ namespace Foundation.Metadata.Annotations
 
         public string Schema
         {
-            get { throw new NotImplementedException(); /* return (string)Metadata[RelationalAnnotationNames.Schema] ?? GetAnnotations(Entity.Model).DefaultSchema; */ }
+            get { return (string)Metadata[RelationalAnnotationNames.Schema] ?? new RelationalModelAnnotations(Entity.Model).DefaultSchema; }
             set { Metadata[RelationalAnnotationNames.Schema] = Check.NullButNotEmpty(value, nameof(value)); }
         }
 
-        public Property DiscriminatorProperty
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
+        public Property DiscriminatorProperty { get; set; }
 
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public object DiscriminatorValue
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public object DiscriminatorValue { get; set; }
     }
 }

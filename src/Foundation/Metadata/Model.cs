@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Foundation.Metadata.Annotations;
 using Foundation.Metadata.Conventions;
 using Foundation.Utilities;
 
@@ -9,7 +10,7 @@ namespace Foundation.Metadata
     /// <summary>
     ///     Metadata about the shape of entities, the relationships between them, and how they map to the database.
     /// </summary>
-    public class Model
+    public class Model : Annotable
     {
         private readonly SortedDictionary<string, Entity> _entities = new SortedDictionary<string, Entity>();
         private readonly IDictionary<Type, Entity> _clrTypeMap = new Dictionary<Type, Entity>();
