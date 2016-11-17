@@ -9,7 +9,7 @@
         public virtual string PrincipalSchema { get; set; }
         public virtual string PrincipalTable { get; set; }
         public virtual string[] PrincipalColumns { get; set; }
-        //public virtual ReferentialAction OnUpdate { get; set; }
-        //public virtual ReferentialAction OnDelete { get; set; }
+        public virtual ReferentialAction OnUpdate { get; set; }
+        public virtual ReferentialAction OnDelete { get; set; }
     }
 }
