@@ -26,6 +26,12 @@ namespace Foundation.Metadata.Annotations
             set { Metadata[RelationalAnnotationNames.ColumnName] = Check.NullButNotEmpty(value, nameof(value)); }
         }
 
+        public string OldColumnName
+        {
+            get { return (string)Metadata[RelationalAnnotationNames.OldColumnName] ?? Property.Name; }
+            set { Metadata[RelationalAnnotationNames.OldColumnName] = Check.NullButNotEmpty(value, nameof(value)); }
+        }
+
         public virtual string ColumnType
         {
             get { return (string)Metadata[RelationalAnnotationNames.ColumnType]; }

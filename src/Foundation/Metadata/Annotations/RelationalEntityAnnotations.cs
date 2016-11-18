@@ -21,6 +21,12 @@ namespace Foundation.Metadata.Annotations
             set { Metadata[RelationalAnnotationNames.TableName] = Check.NullButNotEmpty(value, nameof(value)); }
         }
 
+        public virtual string OldTableName
+        {
+            get { return (string)Metadata[RelationalAnnotationNames.OldTableName] ?? Entity.Name; }
+            set { Metadata[RelationalAnnotationNames.OldTableName] = Check.NullButNotEmpty(value, nameof(value)); }
+        }
+
         public virtual string Schema
         {
             get { return (string)Metadata[RelationalAnnotationNames.Schema] ?? new RelationalModelAnnotations(Entity.Model).DefaultSchema; }

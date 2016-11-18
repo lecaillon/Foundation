@@ -123,6 +123,12 @@
   <data name="ArgumentPropertyNull" xml:space="preserve">
     <value>The property '{property}' of the argument '{argument}' cannot be null.</value>
   </data>
+  <data name="BadSequenceString" xml:space="preserve">
+    <value>Unable to deserialize sequence from model metadata. See inner exception for details.</value>
+  </data>
+  <data name="BadSequenceType" xml:space="preserve">
+    <value>Invalid type for sequence. Valid types are 'Int64' (the default), 'Int32', 'Int16', and 'Byte'.</value>
+  </data>
   <data name="CollectionArgumentIsEmpty" xml:space="preserve">
     <value>The collection argument '{argumentName}' must contain at least one element.</value>
   </data>

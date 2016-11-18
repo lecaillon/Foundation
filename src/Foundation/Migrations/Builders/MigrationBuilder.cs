@@ -5,6 +5,9 @@ using Foundation.Metadata.Annotations;
 using Foundation.Migrations.Operations;
 using Foundation.Utilities;
 
+//IRelationalTypeMapper -> RelationalTypeMapper -> SqlServerTypeMapper
+//IRelationalConnection -> RelationalConnection -> SqlServerConnection(IDbContextOptions -> DbContextOptions -> 
+
 namespace Foundation.Migrations.Builders
 {
     public class MigrationBuilder
@@ -45,25 +48,25 @@ namespace Foundation.Migrations.Builders
             return new OperationBuilder<AddColumnOperation>(operation);
         }
 
-        public virtual OperationBuilder<AddColumnOperation> AddColumn(Property property)
+        public virtual OperationBuilder<AddColumnOperation> AddColumn(Property prop)
         {
-            Check.NotNull(property, nameof(property));
+            Check.NotNull(prop, nameof(prop));
 
-            var entityAnnotationProvider = AnnotationProvider.For(property.DeclaringEntity.Root());
-            var propertyAnnotationProvider = AnnotationProvider.For(property);
+            var entityAnnotationProvider = AnnotationProvider.For(prop.DeclaringEntity.Root());
+            var propAnnotationProvider = AnnotationProvider.For(prop);
 
-            return AddColumn(name: propertyAnnotationProvider.ColumnName,
+            return AddColumn(name: propAnnotationProvider.ColumnName,
                              table: entityAnnotationProvider.TableName,
-                             clrType: property.ClrType,
-                             type: propertyAnnotationProvider.ColumnType,
+                             clrType: prop.ClrType,
+                             type: propAnnotationProvider.ColumnType,
                              unicode: null,
                              maxLength: null,
                              rowVersion: false,
                              schema: entityAnnotationProvider.Schema,
-                             nullable: property.IsNullable,
-                             defaultValue: propertyAnnotationProvider.DefaultValue,
-                             defaultValueSql: propertyAnnotationProvider.DefaultValueSql,
-                             computedColumnSql: propertyAnnotationProvider.ComputedColumnSql);
+                             nullable: prop.IsNullable,
+                             defaultValue: propAnnotationProvider.DefaultValue,
+                             defaultValueSql: propAnnotationProvider.DefaultValueSql,
+                             computedColumnSql: propAnnotationProvider.ComputedColumnSql);
         }
 
         public virtual OperationBuilder<AddForeignKeyOperation> AddForeignKey(string name, string table, string column, string principalTable, string schema = null, string principalSchema = null, string principalColumn = null, ReferentialAction onUpdate = ReferentialAction.NoAction, ReferentialAction onDelete = ReferentialAction.NoAction)
@@ -245,7 +248,7 @@ namespace Foundation.Migrations.Builders
         }
 
         public virtual AlterOperationBuilder<AlterColumnOperation> AlterColumn(
-            Property property, 
+            Property prop, 
             Type oldClrType = null,
             string oldType = null,
             bool? oldUnicode = null,
@@ -256,23 +259,23 @@ namespace Foundation.Migrations.Builders
             string oldDefaultValueSql = null,
             string oldComputedColumnSql = null)
         {
-            Check.NotNull(property, nameof(property));
+            Check.NotNull(prop, nameof(prop));
 
-            var entityAnnotationProvider = AnnotationProvider.For(property.DeclaringEntity.Root());
-            var propertyAnnotationProvider = AnnotationProvider.For(property);
+            var entityAnnotationProvider = AnnotationProvider.For(prop.DeclaringEntity.Root());
+            var propAnnotationProvider = AnnotationProvider.For(prop);
 
-            return AlterColumn(name: propertyAnnotationProvider.ColumnName,
+            return AlterColumn(name: propAnnotationProvider.ColumnName,
                                table: entityAnnotationProvider.TableName,
-                               clrType: property.ClrType,
-                               type: propertyAnnotationProvider.ColumnType,
+                               clrType: prop.ClrType,
+                               type: propAnnotationProvider.ColumnType,
                                unicode: null,
                                maxLength: null,
                                rowVersion: false,
                                schema: entityAnnotationProvider.Schema,
-                               nullable: property.IsNullable,
-                               defaultValue: propertyAnnotationProvider.DefaultValue,
-                               defaultValueSql: propertyAnnotationProvider.DefaultValueSql,
-                               computedColumnSql: propertyAnnotationProvider.ComputedColumnSql,
+                               nullable: prop.IsNullable,
+                               defaultValue: propAnnotationProvider.DefaultValue,
+                               defaultValueSql: propAnnotationProvider.DefaultValueSql,
+                               computedColumnSql: propAnnotationProvider.ComputedColumnSql,
                                oldClrType: oldClrType,
                                oldType: oldType,
                                oldUnicode: oldUnicode,
@@ -410,10 +413,19 @@ namespace Foundation.Migrations.Builders
 
         public virtual OperationBuilder<CreateSequenceOperation> CreateSequence(Sequence sequence)
         {
+            Check.NotNull(sequence, nameof(sequence));
 
+            return CreateSequence(name: sequence.Name,
+                                  clrType: sequence.ClrType,
+                                  schema: sequence.Schema,
+                                  startValue: sequence.StartValue,
+                                  incrementBy: sequence.IncrementBy,
+                                  minValue: sequence.MinValue,
+                                  maxValue: sequence.MaxValue,
+                                  cyclic: Sequence.DefaultIsCyclic);
         }
 
-
+        // TODO: 
         protected virtual CreateTableBuilder CreateTable(Entity entity)
         {
             Check.NotNull(entity, nameof(entity));
@@ -438,6 +450,274 @@ namespace Foundation.Migrations.Builders
             Operations.Add(createTableOperation);
 
             return builder;
+        }
+
+        public virtual OperationBuilder<DropColumnOperation> DropColumn(string name, string table, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(table, nameof(table));
+
+            var operation = new DropColumnOperation
+            {
+                Schema = schema,
+                Table = table,
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropColumnOperation>(operation);
+        }
+
+        public virtual OperationBuilder<DropForeignKeyOperation> DropForeignKey(string name, string table, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(table, nameof(table));
+
+            var operation = new DropForeignKeyOperation
+            {
+                Schema = schema,
+                Table = table,
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropForeignKeyOperation>(operation);
+        }
+
+        public virtual OperationBuilder<DropIndexOperation> DropIndex(string name, string table = null, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var operation = new DropIndexOperation
+            {
+                Schema = schema,
+                Table = table,
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropIndexOperation>(operation);
+        }
+
+        public virtual OperationBuilder<DropIndexOperation> DropIndex(Index ix)
+        {
+            Check.NotNull(ix, nameof(ix));
+
+            var entityAnnotationProvider = AnnotationProvider.For(ix.DeclaringEntity.Root());
+            var ixAnnotationProvider = AnnotationProvider.For(ix);
+
+            return DropIndex(ixAnnotationProvider.Name, entityAnnotationProvider.TableName, entityAnnotationProvider.Schema);
+        }
+
+        public virtual OperationBuilder<DropPrimaryKeyOperation> DropPrimaryKey(string name, string table, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(table, nameof(table));
+
+            var operation = new DropPrimaryKeyOperation
+            {
+                Schema = schema,
+                Table = table,
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropPrimaryKeyOperation>(operation);
+        }
+
+        public virtual OperationBuilder<DropPrimaryKeyOperation> DropPrimaryKey(Key pk)
+        {
+            Check.NotNull(pk, nameof(pk));
+
+            var entityAnnotationProvider = AnnotationProvider.For(pk.DeclaringEntity.Root());
+            var pkAnnotationProvider = AnnotationProvider.For(pk);
+
+            return DropPrimaryKey(pkAnnotationProvider.Name, entityAnnotationProvider.TableName, entityAnnotationProvider.Schema);
+        }
+
+        public virtual OperationBuilder<DropSchemaOperation> DropSchema(string name)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var operation = new DropSchemaOperation
+            {
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropSchemaOperation>(operation);
+        }
+
+        public virtual OperationBuilder<DropSequenceOperation> DropSequence(string name, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var operation = new DropSequenceOperation
+            {
+                Schema = schema,
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropSequenceOperation>(operation);
+        }
+
+        public virtual OperationBuilder<DropSequenceOperation> DropSequence(Sequence sequence)
+        {
+            Check.NotNull(sequence, nameof(sequence));
+
+            return DropSequence(sequence.Name, sequence.Schema);
+        }
+
+        public virtual OperationBuilder<DropTableOperation> DropTable(string name, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var operation = new DropTableOperation
+            {
+                Schema = schema,
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropTableOperation>(operation);
+        }
+
+        public virtual OperationBuilder<DropUniqueConstraintOperation> DropUniqueConstraint(string name, string table, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(table, nameof(table));
+
+            var operation = new DropUniqueConstraintOperation
+            {
+                Schema = schema,
+                Table = table,
+                Name = name
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<DropUniqueConstraintOperation>(operation);
+        }
+
+        public virtual OperationBuilder<RenameColumnOperation> RenameColumn(string name, string table, string newName, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(table, nameof(table));
+            Check.NotEmpty(newName, nameof(newName));
+
+            var operation = new RenameColumnOperation
+            {
+                Name = name,
+                Schema = schema,
+                Table = table,
+                NewName = newName
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<RenameColumnOperation>(operation);
+        }
+
+        public virtual OperationBuilder<RenameColumnOperation> RenameColumn(Property prop)
+        {
+            Check.NotNull(prop, nameof(prop));
+
+            var entityAnnotationProvider = AnnotationProvider.For(prop.DeclaringEntity.Root());
+            var propAnnotationProvider = AnnotationProvider.For(prop);
+
+            return RenameColumn(name: propAnnotationProvider.OldColumnName, 
+                                table: entityAnnotationProvider.TableName, 
+                                newName: propAnnotationProvider.ColumnName, 
+                                schema: entityAnnotationProvider.Schema);
+        }
+
+        public virtual OperationBuilder<RenameIndexOperation> RenameIndex(string name, string newName, string table = null, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(newName, nameof(newName));
+
+            var operation = new RenameIndexOperation
+            {
+                Schema = schema,
+                Table = table,
+                Name = name,
+                NewName = newName
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<RenameIndexOperation>(operation);
+        }
+
+        public virtual OperationBuilder<RenameSequenceOperation> RenameSequence(string name, string schema = null, string newName = null, string newSchema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var operation = new RenameSequenceOperation
+            {
+                Name = name,
+                Schema = schema,
+                NewName = newName,
+                NewSchema = newSchema
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<RenameSequenceOperation>(operation);
+        }
+
+        public virtual OperationBuilder<RenameTableOperation> RenameTable(string name, string schema = null, string newName = null, string newSchema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var operation = new RenameTableOperation
+            {
+                Schema = schema,
+                Name = name,
+                NewName = newName,
+                NewSchema = newSchema
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<RenameTableOperation>(operation);
+        }
+
+        public virtual OperationBuilder<RenameTableOperation> RenameTable(Entity entity)
+        {
+            Check.NotNull(entity, nameof(entity));
+
+            var entityAnnotationProvider = AnnotationProvider.For(entity);
+
+            return RenameTable(name: entityAnnotationProvider.OldTableName,
+                                     schema: entityAnnotationProvider.Schema,
+                                     newName: entityAnnotationProvider.TableName,
+                                     newSchema: entityAnnotationProvider.Schema);
+        }
+
+        public virtual OperationBuilder<RestartSequenceOperation> RestartSequence(string name, long startValue = 1L, string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+
+            var operation = new RestartSequenceOperation
+            {
+                Name = name,
+                Schema = schema,
+                StartValue = startValue
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<RestartSequenceOperation>(operation);
+        }
+
+        public virtual OperationBuilder<SqlOperation> Sql(string sql, bool suppressTransaction = false)
+        {
+            Check.NotEmpty(sql, nameof(sql));
+
+            var operation = new SqlOperation
+            {
+                Sql = sql,
+                SuppressTransaction = suppressTransaction
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<SqlOperation>(operation);
         }
     }
 }

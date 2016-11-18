@@ -32,6 +32,22 @@ namespace Foundation
         }
 
         /// <summary>
+        /// Unable to deserialize sequence from model metadata. See inner exception for details.
+        /// </summary>
+        public static string BadSequenceString
+        {
+            get { return GetString("BadSequenceString"); }
+        }
+
+        /// <summary>
+        /// Invalid type for sequence. Valid types are 'Int64' (the default), 'Int32', 'Int16', and 'Byte'.
+        /// </summary>
+        public static string BadSequenceType
+        {
+            get { return GetString("BadSequenceType"); }
+        }
+
+        /// <summary>
         /// The collection argument '{argumentName}' must contain at least one element.
         /// </summary>
         public static string CollectionArgumentIsEmpty(object argumentName)

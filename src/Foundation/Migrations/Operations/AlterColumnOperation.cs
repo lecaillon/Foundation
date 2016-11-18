@@ -1,5 +1,4 @@
-﻿using System;
-using Foundation.Metadata.Annotations;
+﻿using Foundation.Metadata.Annotations;
 
 namespace Foundation.Migrations.Operations
 {

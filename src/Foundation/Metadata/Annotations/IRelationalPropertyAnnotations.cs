@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Foundation.Metadata.Annotations
+﻿namespace Foundation.Metadata.Annotations
 {
     public interface IRelationalPropertyAnnotations
     {
@@ -12,5 +7,6 @@ namespace Foundation.Metadata.Annotations
         string DefaultValueSql { get; set; }
         string ComputedColumnSql { get; set; }
         object DefaultValue { get; set; }
+        string OldColumnName { get; set; }
     }
 }
