@@ -183,6 +183,15 @@
   <data name="IncorrectDefaultValueType" xml:space="preserve">
     <value>Cannot set default value '{value}' of type '{valueType}' on property '{property}' of type '{propertyType}' in entity '{entity}'.</value>
   </data>
+  <data name="InvalidComplexPropertyExpression" xml:space="preserve">
+    <value>The property expression '{propertyAccessExpression}' is not valid. The expression should represent a property access: 't =&gt; t.MyProperty'. For more information on including related data, see http://go.microsoft.com/fwlink/?LinkID=746393.</value>
+  </data>
+  <data name="InvalidPropertiesExpression" xml:space="preserve">
+    <value>The properties expression '{expression}' is not valid. The expression should represent a property access: 't =&gt; t.MyProperty'. When specifying multiple properties use an anonymous type: 't =&gt; new {{ t.MyProperty1, t.MyProperty2 }}'.</value>
+  </data>
+  <data name="InvalidPropertyExpression" xml:space="preserve">
+    <value>The expression '{expression}' is not a valid property expression. The expression should represent a property access: 't =&gt; t.MyProperty'.</value>
+  </data>
   <data name="KeyNotPrimary" xml:space="preserve">
     <value>The specified key {key} must be primary.</value>
   </data>

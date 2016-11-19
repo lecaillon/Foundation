@@ -192,6 +192,30 @@ namespace Foundation
         }
 
         /// <summary>
+        /// The property expression '{propertyAccessExpression}' is not valid. The expression should represent a property access: 't =&gt; t.MyProperty'. For more information on including related data, see http://go.microsoft.com/fwlink/?LinkID=746393.
+        /// </summary>
+        public static string InvalidComplexPropertyExpression(object propertyAccessExpression)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("InvalidComplexPropertyExpression", "propertyAccessExpression"), propertyAccessExpression);
+        }
+
+        /// <summary>
+        /// The properties expression '{expression}' is not valid. The expression should represent a property access: 't =&gt; t.MyProperty'. When specifying multiple properties use an anonymous type: 't =&gt; new {{ t.MyProperty1, t.MyProperty2 }}'.
+        /// </summary>
+        public static string InvalidPropertiesExpression(object expression)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("InvalidPropertiesExpression", "expression"), expression);
+        }
+
+        /// <summary>
+        /// The expression '{expression}' is not a valid property expression. The expression should represent a property access: 't =&gt; t.MyProperty'.
+        /// </summary>
+        public static string InvalidPropertyExpression(object expression)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("InvalidPropertyExpression", "expression"), expression);
+        }
+
+        /// <summary>
         /// The specified key {key} must be primary.
         /// </summary>
         public static string KeyNotPrimary(object key)
