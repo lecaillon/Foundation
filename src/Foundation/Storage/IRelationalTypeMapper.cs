@@ -39,6 +39,38 @@ namespace Foundation.Storage
         RelationalTypeMapping FindMapping(string storeType);
 
         /// <summary>
+        ///     Gets the relational database type for a given object, throwing if no mapping is found.
+        /// </summary>
+        /// <param name="typeMapper"> The type mapper. </param>
+        /// <param name="value"> The object to get the mapping for. </param>
+        /// <returns> The type mapping to be used. </returns>
+        RelationalTypeMapping GetMappingForValue(object value);
+
+        /// <summary>
+        ///     Gets the relational database type for a given property, throwing if no mapping is found.
+        /// </summary>
+        /// <param name="typeMapper"> The type mapper. </param>
+        /// <param name="property"> The property to get the mapping for. </param>
+        /// <returns> The type mapping to be used. </returns>
+        RelationalTypeMapping GetMapping(Property property);
+
+        /// <summary>
+        ///     Gets the relational database type for a given .NET type, throwing if no mapping is found.
+        /// </summary>
+        /// <param name="typeMapper"> The type mapper. </param>
+        /// <param name="clrType"> The type to get the mapping for. </param>
+        /// <returns> The type mapping to be used. </returns>
+        RelationalTypeMapping GetMapping(Type clrType);
+
+        /// <summary>
+        ///     Gets the mapping that represents the given database type, throwing if no mapping is found.
+        /// </summary>
+        /// <param name="typeMapper"> The type mapper. </param>
+        /// <param name="typeName"> The type to get the mapping for. </param>
+        /// <returns> The type mapping to be used. </returns>
+        RelationalTypeMapping GetMapping(string typeName);
+
+        /// <summary>
         ///     Ensures that the given type name is a valid type for the relational database.
         ///     An exception is thrown if it is not a valid type.
         /// </summary>

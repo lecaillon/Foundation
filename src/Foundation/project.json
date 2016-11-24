@@ -5,13 +5,15 @@
 
   "dependencies": {
     "System.ComponentModel.Annotations": "4.3.0-*",
-    "System.Data.Common": "4.3.0-*"
+    "System.Data.Common": "4.3.0-*",
+    "System.Diagnostics.DiagnosticSource": "4.3.0-*",
+    "Microsoft.Extensions.Logging": "1.1.0"
   },
 
   "frameworks": {
     "netstandard1.6": {
       "dependencies": {
-        "NETStandard.Library": "1.6.0"
+        "NETStandard.Library": "1.6.1"
       }
     }
   }

@@ -6,13 +6,7 @@ using Foundation.Utilities;
 namespace Foundation.Storage
 {
     /// <summary>
-    ///     <para>
-    ///         Represents the mapping between a .NET type and a database type.
-    ///     </para>
-    ///     <para>
-    ///         This type is typically used by database providers (and other extensions). It is generally
-    ///         not used in application code.
-    ///     </para>
+    ///     Represents the mapping between a .NET type and a database type.
     /// </summary>
     public class RelationalTypeMapping
     {

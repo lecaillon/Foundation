@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Foundation.Metadata.Annotations;
 using Foundation.Utilities;
 
 namespace Foundation.Metadata
@@ -70,6 +71,21 @@ namespace Foundation.Metadata
         ///     Gets the indexes that use this property (or part of a composite index).
         /// </summary>
         public IReadOnlyList<Index> Indexes { get; set; }
+
+        /// <summary>
+        ///     Gets the maximum length of data that is allowed in this property. For example, if the property is a <see cref="string" /> '
+        ///     then this is the maximum number of characters.
+        /// </summary>
+        /// <param name="property"> The property to get the maximum length of. </param>
+        /// <returns> The maximum length, or null if none if defined. </returns>
+        public int? MaxLength => (int?)this[CoreAnnotationNames.MaxLengthAnnotation];
+
+        /// <summary>
+        ///     Gets a value indicating whether or not the property can persist unicode characters.
+        /// </summary>
+        /// <param name="property"> The property to get the unicode setting for. </param>
+        /// <returns> The unicode setting, or null if none if defined. </returns>
+        public bool? IsUnicode =>  (bool?)this[CoreAnnotationNames.UnicodeAnnotation];
 
         public override string ToString() => this.ToDebugString();
 

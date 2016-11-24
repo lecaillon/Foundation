@@ -240,6 +240,14 @@ namespace Foundation
         }
 
         /// <summary>
+        /// No value provided for required parameter '{parameter}'.
+        /// </summary>
+        public static string MissingParameterValue(object parameter)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("MissingParameterValue", "parameter"), parameter);
+        }
+
+        /// <summary>
         /// A key on entity type '{entityType}' cannot contain the property '{property}' because it is nullable/optional. All properties on which a key is declared must be marked as non-nullable/required.
         /// </summary>
         public static string NullableKey(object entityType, object property)
@@ -248,11 +256,43 @@ namespace Foundation
         }
 
         /// <summary>
+        /// Cannot use the value provided for parameter '{parameter}' because it isn't assignable to type object[].
+        /// </summary>
+        public static string ParameterNotObjectArray(object parameter)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ParameterNotObjectArray", "parameter"), parameter);
+        }
+
+        /// <summary>
         /// A temporary primary key cannot be added because a primary key is already defined.
         /// </summary>
         public static string PrimaryKeyAlreadyExists
         {
             get { return GetString("PrimaryKeyAlreadyExists"); }
+        }
+
+        /// <summary>
+        /// Executed DbCommand ({elapsed}ms) [Parameters=[{parameters}], CommandType='{commandType}', CommandTimeout='{commandTimeout}']{newLine}{commandText}
+        /// </summary>
+        public static string RelationalLoggerExecutedCommand(object elapsed, object parameters, object commandType, object commandTimeout, object newLine, object commandText)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("RelationalLoggerExecutedCommand", "elapsed", "parameters", "commandType", "commandTimeout", "newLine", "commandText"), elapsed, parameters, commandType, commandTimeout, newLine, commandText);
+        }
+
+        /// <summary>
+        /// No mapping to a relational type can be found for property '{entity}.{property}' with the CLR type '{clrType}'.
+        /// </summary>
+        public static string UnsupportedPropertyType(object entity, object property, object clrType)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("UnsupportedPropertyType", "entity", "property", "clrType"), entity, property, clrType);
+        }
+
+        /// <summary>
+        /// No mapping to a relational type can be found for the CLR type '{clrType}'.
+        /// </summary>
+        public static string UnsupportedType(object clrType)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("UnsupportedType", "clrType"), clrType);
         }
 
         private static string GetString(string name, params string[] formatterNames)

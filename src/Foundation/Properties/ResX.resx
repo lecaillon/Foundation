@@ -201,10 +201,25 @@
   <data name="KeyPropertyInForeignKey" xml:space="preserve">
     <value>The property '{property}' cannot be part of a key on '{entityType}' because it is contained in a foreign key defined on a derived entity type.</value>
   </data>
+  <data name="MissingParameterValue" xml:space="preserve">
+    <value>No value provided for required parameter '{parameter}'.</value>
+  </data>
   <data name="NullableKey" xml:space="preserve">
     <value>A key on entity type '{entityType}' cannot contain the property '{property}' because it is nullable/optional. All properties on which a key is declared must be marked as non-nullable/required.</value>
   </data>
+  <data name="ParameterNotObjectArray" xml:space="preserve">
+    <value>Cannot use the value provided for parameter '{parameter}' because it isn't assignable to type object[].</value>
+  </data>
   <data name="PrimaryKeyAlreadyExists" xml:space="preserve">
     <value>A temporary primary key cannot be added because a primary key is already defined.</value>
+  </data>
+  <data name="RelationalLoggerExecutedCommand" xml:space="preserve">
+    <value>Executed DbCommand ({elapsed}ms) [Parameters=[{parameters}], CommandType='{commandType}', CommandTimeout='{commandTimeout}']{newLine}{commandText}</value>
+  </data>
+  <data name="UnsupportedPropertyType" xml:space="preserve">
+    <value>No mapping to a relational type can be found for property '{entity}.{property}' with the CLR type '{clrType}'.</value>
+  </data>
+  <data name="UnsupportedType" xml:space="preserve">
+    <value>No mapping to a relational type can be found for the CLR type '{clrType}'.</value>
   </data>
 </root>
